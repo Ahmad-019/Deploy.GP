@@ -142,26 +142,43 @@ hr { border-color: var(--border) !important; }
    MOBILE FIXES — VISIBILITY ISSUES
    ═══════════════════════════════════════════════════════════ */
 
-/* FIX 1: Sidebar collapse arrows & Mobile hamburger menu visibility */
-[data-testid="collapsedControl"],
-[data-testid="stSidebarCollapseButton"] {
-    background-color: transparent !important;
-    box-shadow: none !important;
-}
+/* ═══════════════════════════════════════════════════════════
+   ULTIMATE FIX: ALL SIDEBAR & HEADER ICONS (MOBILE & DESKTOP)
+   ═══════════════════════════════════════════════════════════ */
 
+/* 1. Target the floating expand controls (New & Old Streamlit versions) */
+[data-testid="stSidebarCollapsedControl"] svg,
+[data-testid="stSidebarCollapsedControl"] path,
 [data-testid="collapsedControl"] svg,
-[data-testid="collapsedControl"] path,
-[data-testid="stSidebarCollapseButton"] svg,
-[data-testid="stSidebarCollapseButton"] path,
-header[data-testid="stHeader"] button svg,
-header[data-testid="stHeader"] button path {
-    fill: #1A1A1A !important;   /* Sets the icon to Dark Charcoal/Black */
-    stroke: #1A1A1A !important; /* Sets the icon to Dark Charcoal/Black */
+[data-testid="collapsedControl"] path {
+    fill: #1A1A1A !important;
+    stroke: #1A1A1A !important;
     color: #1A1A1A !important;
 }
 
-header[data-testid="stHeader"] button:hover {
-    background-color: rgba(0,0,0,0.05) !important;
+/* 2. Target the mobile header menu specifically */
+header button svg,
+header button path,
+header[data-testid="stHeader"] button svg,
+header[data-testid="stHeader"] button path {
+    fill: #1A1A1A !important;
+    stroke: #1A1A1A !important; 
+    color: #1A1A1A !important;
+}
+
+/* 3. Target the 'X' close button inside the opened sidebar */
+[data-testid="stSidebar"] button svg,
+[data-testid="stSidebar"] button path {
+    fill: #1A1A1A !important;
+    stroke: #1A1A1A !important;
+    color: #1A1A1A !important;
+}
+
+/* 4. Ensure backgrounds don't block the icons */
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="collapsedControl"],
+header[data-testid="stHeader"] {
+    background-color: transparent !important;
 }
 /* FIX 2: Export to Editor CSV button */
 [data-testid="stDownloadButton"] button {
