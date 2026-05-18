@@ -10,3 +10,4 @@ wordcloud
 arabic-reshaper
 python-bidi
 python-dotenv
+torch
