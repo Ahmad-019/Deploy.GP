@@ -142,21 +142,27 @@ hr { border-color: var(--border) !important; }
    MOBILE FIXES — VISIBILITY ISSUES
    ═══════════════════════════════════════════════════════════ */
 
-/* FIX 1: Sidebar collapse arrow — Visible on Mobile */
-[data-testid="collapsedControl"] {
-    background-color: transparent !important; 
-    border-radius: 0 8px 8px 0 !important;
+/* FIX 1: Sidebar collapse arrows & Mobile hamburger menu visibility */
+[data-testid="collapsedControl"],
+[data-testid="stSidebarCollapseButton"] {
+    background-color: transparent !important;
     box-shadow: none !important;
-    transition: background-color 0.2s ease;
-}
-[data-testid="collapsedControl"] svg {
-    fill: #800020 !important;   /* Makes the arrow Cherry Red */
-    stroke: #800020 !important; /* Makes the arrow Cherry Red */
-}
-[data-testid="collapsedControl"]:hover {
-    background-color: rgba(128,0,32,0.08) !important; /* Light red hover effect */
 }
 
+[data-testid="collapsedControl"] svg,
+[data-testid="collapsedControl"] path,
+[data-testid="stSidebarCollapseButton"] svg,
+[data-testid="stSidebarCollapseButton"] path,
+header[data-testid="stHeader"] button svg,
+header[data-testid="stHeader"] button path {
+    fill: #1A1A1A !important;   /* Sets the icon to Dark Charcoal/Black */
+    stroke: #1A1A1A !important; /* Sets the icon to Dark Charcoal/Black */
+    color: #1A1A1A !important;
+}
+
+header[data-testid="stHeader"] button:hover {
+    background-color: rgba(0,0,0,0.05) !important;
+}
 /* FIX 2: Export to Editor CSV button */
 [data-testid="stDownloadButton"] button {
     background-color: rgba(128,0,32,0.08) !important;
