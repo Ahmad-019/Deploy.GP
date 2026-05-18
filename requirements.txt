@@ -1,0 +1,12 @@
+streamlit
+pandas
+plotly
+numpy
+google-api-python-client
+transformers
+deep-translator
+matplotlib
+wordcloud
+arabic-reshaper
+python-bidi
+python-dotenv
