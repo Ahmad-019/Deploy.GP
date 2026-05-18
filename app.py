@@ -26,13 +26,8 @@ except ImportError:
 # ==========================================================
 # SECURE API KEY CONFIGURATION
 # ==========================================================
-# Load environment variables for local development
 load_dotenv()
-
-# Securely read the API key from the environment
 API_KEY = os.getenv("YOUTUBE_API_KEY")
-
-# Halt execution if the API key is missing
 if not API_KEY:
     st.error("⚠️ YouTube API Key not found. Please ensure environment variables are properly configured.")
     st.stop()
@@ -73,21 +68,15 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stAppViewContainer
     font-family: var(--font-body) !important;
 }
 [data-testid="block-container"] { padding: 0 3rem 5rem !important; max-width: 1400px; }
-
-/* FIX: Keep header visible so sidebar toggle arrow works, hide only menu and footer */
 #MainMenu, footer { visibility: hidden; }
 header { background-color: transparent !important; }
-
 [data-testid="stSidebar"] { background: var(--surface-1) !important; border-right: 1px solid var(--border) !important; }
 [data-testid="stSidebar"] > div { padding-top: 0 !important; }
-
-/* Customizing Radio Buttons */
 div[role="radiogroup"] > label {
     font-family: var(--font-body) !important;
     font-size: 0.85rem !important;
     color: var(--text-2) !important;
 }
-
 [data-testid="stSidebar"] .stTextInput label {
     color: var(--text-3) !important; font-size: 0.65rem !important; font-weight: 600 !important;
     letter-spacing: 1.4px !important; text-transform: uppercase !important; font-family: var(--font-mono) !important;
@@ -117,6 +106,140 @@ hr { border-color: var(--border) !important; }
 ::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 4px; }
 .highlight-link:hover { opacity: 0.8; transform: scale(1.02); }
 @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE RESPONSIVE ADD-ON — DO NOT MODIFY ABOVE
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+    /* Reduce main container padding on mobile */
+    [data-testid="block-container"] {
+        padding: 0 1rem 3rem !important;
+    }
+
+    /* Hero section — smaller text and padding on mobile */
+    [data-testid="block-container"] div[style*="padding:64px"] {
+        padding: 32px 0 28px !important;
+    }
+
+    /* Make hero title font scale down on very small screens */
+    [data-testid="block-container"] div[style*="Bebas Neue"] {
+        font-size: clamp(2rem, 10vw, 3.5rem) !important;
+        letter-spacing: 1px !important;
+    }
+
+    /* KPI metric cards — stack them and make text smaller */
+    div[data-testid="metric-container"] {
+        padding: 14px 16px !important;
+    }
+    [data-testid="stMetricValue"] {
+        font-size: 1.6rem !important;
+    }
+    [data-testid="stMetricLabel"] {
+        font-size: 0.55rem !important;
+    }
+
+    /* Golden Moment cards — reduce font size of big timestamp */
+    div[style*="font-size:3.8rem"] {
+        font-size: 2.2rem !important;
+        letter-spacing: 1px !important;
+    }
+
+    /* OPEN YOUTUBE button inside card — smaller on mobile */
+    div[style*="font-size:1rem"][style*="OPEN YOUTUBE"] {
+        font-size: 0.7rem !important;
+        padding: 3px 7px !important;
+    }
+
+    /* Section headers — reduce margin on mobile */
+    div[style*="margin-top:52px"] {
+        margin-top: 28px !important;
+    }
+
+    /* Sidebar text input — full width comfortable touch target */
+    [data-testid="stSidebar"] .stTextInput input {
+        font-size: 0.85rem !important;
+        padding: 12px 14px !important;
+    }
+
+    /* Radio buttons — larger touch targets on mobile */
+    div[role="radiogroup"] > label {
+        font-size: 0.9rem !important;
+        padding: 4px 0 !important;
+    }
+
+    /* Idle state box — reduce padding on mobile */
+    div[style*="padding:80px 40px"] {
+        padding: 40px 20px !important;
+    }
+
+    /* Plotly charts — ensure full width */
+    .stPlotlyChart {
+        width: 100% !important;
+    }
+
+    /* Word cloud — ensure full width */
+    .stPyplot {
+        width: 100% !important;
+    }
+
+    /* Download button — full width on mobile */
+    [data-testid="stDownloadButton"] button {
+        width: 100% !important;
+        font-size: 0.8rem !important;
+    }
+
+    /* Tabs — make them scrollable on small screens */
+    [data-testid="stTabs"] {
+        overflow-x: auto !important;
+    }
+
+    /* AI Recommendation box — reduce padding on mobile */
+    div[style*="padding:24px"][style*="border-left:4px solid #800020"] {
+        padding: 16px !important;
+    }
+
+    /* Embedded video — full width */
+    iframe {
+        width: 100% !important;
+        height: auto !important;
+        aspect-ratio: 16/9 !important;
+    }
+
+    /* Intelligence stack tags */
+    div[style*="INTELLIGENCE"] span {
+        font-size: 0.5rem !important;
+    }
+
+    /* Status container */
+    [data-testid="stStatusContainer"] {
+        font-size: 0.72rem !important;
+    }
+}
+
+/* Extra small screens (phones under 480px) */
+@media (max-width: 480px) {
+
+    [data-testid="block-container"] {
+        padding: 0 0.5rem 2rem !important;
+    }
+
+    [data-testid="stMetricValue"] {
+        font-size: 1.3rem !important;
+    }
+
+    div[style*="font-size:3.8rem"] {
+        font-size: 1.8rem !important;
+    }
+
+    div[style*="padding:28px 24px 15px"] {
+        padding: 16px 14px 10px !important;
+    }
+
+    div[style*="padding:10px 24px 24px"] {
+        padding: 8px 14px 16px !important;
+    }
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -195,7 +318,6 @@ def process_intelligence(comments: List[str]):
     data = []
     pattern = r'(\d{1,2}:\d{2}(?::\d{2})?)'
     arabic_to_english_digits = str.maketrans('٠١٢٣٤٥٦٧٨٩', '0123456789')
-    
     for text in comments:
         normalized_text = text.translate(arabic_to_english_digits)
         matches = re.findall(pattern, normalized_text)
@@ -213,7 +335,6 @@ def classify_sentiment_logic(text: str):
     if any(x in t for x in ['حزين', 'يقهر', 'يبكي', 'زعلت', 'حرام', 'قهر', 'كسر خاطري', 'مسكين']): return "Sad"
     if any(x in t for x in ['غلط', 'كذاب', 'مستفز', 'يع', 'سيء', 'تافه', 'مستحيل', 'قرف', 'كذب']): return "Controversial"
     if any(x in t for x in ['عظيم', 'مؤثر', 'بطل', 'فخر', 'ملهم', 'احترام']): return "Inspirational"
-
     try:
         if re.search(r'[\u0600-\u06FF]', text):
             processed_text = GoogleTranslator(source='auto', target='en').translate(text[:500])
@@ -228,13 +349,12 @@ def classify_sentiment_logic(text: str):
 #  SMARTER TOP-3 ALGORITHM
 # ═══════════════════════════════════════════════════════════
 EMOTION_HEAT   = {"Funny": 1.4, "Controversial": 1.5, "Inspirational": 1.3, "Happy": 1.0, "Sad": 0.9}
-MIN_WINDOW_GAP = 3   # Minimum minutes between highlights
+MIN_WINDOW_GAP = 3
 
 def compute_smart_highlights(df: pd.DataFrame, top_n: int = 3) -> pd.DataFrame:
     if df.empty: return pd.DataFrame()
     df = df.copy()
     df['Window'] = df['Seconds'] // 60
-
     records = []
     for window, grp in df.groupby('Window'):
         count        = len(grp)
@@ -246,7 +366,6 @@ def compute_smart_highlights(df: pd.DataFrame, top_n: int = 3) -> pd.DataFrame:
         diversity_b  = 1 + (unique_em - 1) * 0.15
         avg_heat     = sum(EMOTION_HEAT.get(e, 1.0) for e in grp['Sentiment']) / count
         raw_score    = count * avg_heat * diversity_b
-        
         records.append({'Window': window, 'Timestamp': dominant_ts, 'Seconds': exact_secs, 'Sentiment': dominant_em, 'Count': count, 'RawScore': raw_score, 'Diversity': unique_em})
 
     scored = pd.DataFrame(records).sort_values('RawScore', ascending=False)
@@ -302,7 +421,6 @@ DATA SOURCE
         if st.button("🗑️ Clear History", use_container_width=True):
             st.session_state.watch_history = []
             st.rerun()
-            
         if not st.session_state.watch_history:
             st.caption("No recent analysis found.")
         else:
@@ -430,7 +548,7 @@ if target_url:
     if "df_work" not in st.session_state: st.session_state.df_work = pd.DataFrame()
 
     if st.session_state.current_vid != v_id or st.session_state.current_depth != target_max_results:
-        st.session_state.vid_start_time = 0 
+        st.session_state.vid_start_time = 0
         with st.status("⚙️  Initialising BI Pipeline (Running NLP)...", expanded=True) as status:
             raw = fetch_comments_refined(v_id, max_results=target_max_results)
             st.session_state.raw_len = len(raw)
@@ -487,7 +605,6 @@ if target_url:
             yt_link = f"https://youtu.be/{v_id}?t={int(row['Seconds'])}"
 
             with cols[i]:
-                # Top HTML
                 st.markdown(f"""
 <div style="background:#FFFFFF;border:1px solid rgba(128,0,32,0.12);border-top:4px solid {meta['border_top']};border-top-left-radius:16px;border-top-right-radius:16px;padding:28px 24px 15px;box-shadow:0 10px 25px rgba(0,0,0,0.02);">
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
@@ -506,13 +623,11 @@ if target_url:
 </a>
 </div>
 """, unsafe_allow_html=True)
-                
-                # The In-App Sync Button (Middle)
+
                 if st.button(f"▶ PLAY IN-APP", key=f"sync_play_{row['Seconds']}_{i}", use_container_width=True):
                     st.session_state.vid_start_time = int(row['Seconds'])
                     st.rerun()
 
-                # Bottom HTML Stats
                 st.markdown(f"""
 <div style="background:#FFFFFF;border:1px solid rgba(128,0,32,0.12);border-top:none;border-bottom-left-radius:16px;border-bottom-right-radius:16px;padding:10px 24px 24px;box-shadow:0 10px 25px rgba(0,0,0,0.02);">
 <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#707070;margin-bottom:22px;margin-top:5px;">
@@ -557,7 +672,7 @@ if target_url:
     if selected_filter == "All Emotions":
         st.markdown("<br>", unsafe_allow_html=True)
         tab1, tab2 = st.tabs(["🎭 Emotion Breakdown", "☁️ Smart Word Cloud"])
-        
+
         with tab1:
             em_counts = df_work_cached[df_work_cached['Sentiment'] != "Neutral"]['Sentiment'].value_counts().reset_index()
             em_counts.columns = ['Sentiment', 'Count']
@@ -568,24 +683,20 @@ if target_url:
             )
             fig2.update_layout(
                 paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", showlegend=False,
-                font=dict(family="JetBrains Mono", color="#800020", size=12), 
+                font=dict(family="JetBrains Mono", color="#800020", size=12),
                 margin=dict(l=0, r=0, t=10, b=0),
             )
             st.plotly_chart(fig2, use_container_width=True)
-            
+
         with tab2:
             st.markdown("<div style='text-align:center; font-size:0.8rem; color:#707070; margin-bottom:10px;'>Most frequent words (Stop-words removed)</div>", unsafe_allow_html=True)
             text_data = " ".join(df_work_cached['Content'].tolist())
-            
-            # --- CLEANSING DICTIONARY (English + Arabic) ---
             arabic_stopwords = set(["في", "من", "على", "الى", "إلى", "و", "يا", "لا", "ما", "اللي", "كان", "بس", "تبع", "هاد", "هذا", "ان", "انا", "هو", "هي"])
             english_junk = set(["u", "ur", "video", "youtube", "bro", "im", "will", "one", "like", "subscribe"])
             final_stopwords = set(STOPWORDS).union(arabic_stopwords).union(english_junk)
-            
             if ARABIC_SUPPORT:
                 text_data = arabic_reshaper.reshape(text_data)
                 text_data = get_display(text_data)
-                
             wc = WordCloud(width=800, height=350, background_color='white', stopwords=final_stopwords, colormap='inferno').generate(text_data)
             fig_wc, ax = plt.subplots(figsize=(10, 5))
             ax.imshow(wc, interpolation='bilinear')
@@ -596,7 +707,7 @@ if target_url:
         # ── AI STRATEGIC RECOMMENDATION ──
         top_emotion = em_counts.iloc[0]['Sentiment'] if not em_counts.empty else "Happy"
         rec_text = AI_RECOMMENDATIONS.get(top_emotion, "Maintain current content strategy based on stable engagement.")
-        
+
         st.markdown(f"""
         <div style="margin-top:30px;padding:24px;background:rgba(128,0,32,0.04);border:1px solid rgba(128,0,32,0.2);border-left:4px solid #800020;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.02);">
             <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:#1A1A1A;margin-bottom:8px;display:flex;align-items:center;gap:8px;">
