@@ -46,12 +46,12 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;600&display=swap');
 :root {
-  --cherry:     #800020; 
+  --cherry:     #800020;
   --cherry-lt:  #9E1B34;
-  --surface-0:  #FAF9F6; 
-  --surface-1:  #E2DCD0; 
-  --surface-2:  #FFFFFF; 
-  --surface-3:  #D1C9B8; 
+  --surface-0:  #FAF9F6;
+  --surface-1:  #E2DCD0;
+  --surface-2:  #FFFFFF;
+  --surface-3:  #D1C9B8;
   --border:     rgba(128,0,32,0.15);
   --border-hi:  rgba(128,0,32,0.4);
   --text-1:     #1A1A1A;
@@ -108,136 +108,98 @@ hr { border-color: var(--border) !important; }
 @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
 
 /* ═══════════════════════════════════════════════════════════
-   MOBILE RESPONSIVE ADD-ON — DO NOT MODIFY ABOVE
+   MOBILE RESPONSIVE ADD-ON
    ═══════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
-
-    /* Reduce main container padding on mobile */
-    [data-testid="block-container"] {
-        padding: 0 1rem 3rem !important;
-    }
-
-    /* Hero section — smaller text and padding on mobile */
-    [data-testid="block-container"] div[style*="padding:64px"] {
-        padding: 32px 0 28px !important;
-    }
-
-    /* Make hero title font scale down on very small screens */
-    [data-testid="block-container"] div[style*="Bebas Neue"] {
-        font-size: clamp(2rem, 10vw, 3.5rem) !important;
-        letter-spacing: 1px !important;
-    }
-
-    /* KPI metric cards — stack them and make text smaller */
-    div[data-testid="metric-container"] {
-        padding: 14px 16px !important;
-    }
-    [data-testid="stMetricValue"] {
-        font-size: 1.6rem !important;
-    }
-    [data-testid="stMetricLabel"] {
-        font-size: 0.55rem !important;
-    }
-
-    /* Golden Moment cards — reduce font size of big timestamp */
-    div[style*="font-size:3.8rem"] {
-        font-size: 2.2rem !important;
-        letter-spacing: 1px !important;
-    }
-
-    /* OPEN YOUTUBE button inside card — smaller on mobile */
-    div[style*="font-size:1rem"][style*="OPEN YOUTUBE"] {
-        font-size: 0.7rem !important;
-        padding: 3px 7px !important;
-    }
-
-    /* Section headers — reduce margin on mobile */
-    div[style*="margin-top:52px"] {
-        margin-top: 28px !important;
-    }
-
-    /* Sidebar text input — full width comfortable touch target */
-    [data-testid="stSidebar"] .stTextInput input {
-        font-size: 0.85rem !important;
-        padding: 12px 14px !important;
-    }
-
-    /* Radio buttons — larger touch targets on mobile */
-    div[role="radiogroup"] > label {
-        font-size: 0.9rem !important;
-        padding: 4px 0 !important;
-    }
-
-    /* Idle state box — reduce padding on mobile */
-    div[style*="padding:80px 40px"] {
-        padding: 40px 20px !important;
-    }
-
-    /* Plotly charts — ensure full width */
-    .stPlotlyChart {
-        width: 100% !important;
-    }
-
-    /* Word cloud — ensure full width */
-    .stPyplot {
-        width: 100% !important;
-    }
-
-    /* Download button — full width on mobile */
-    [data-testid="stDownloadButton"] button {
-        width: 100% !important;
-        font-size: 0.8rem !important;
-    }
-
-    /* Tabs — make them scrollable on small screens */
-    [data-testid="stTabs"] {
-        overflow-x: auto !important;
-    }
-
-    /* AI Recommendation box — reduce padding on mobile */
-    div[style*="padding:24px"][style*="border-left:4px solid #800020"] {
-        padding: 16px !important;
-    }
-
-    /* Embedded video — full width */
-    iframe {
-        width: 100% !important;
-        height: auto !important;
-        aspect-ratio: 16/9 !important;
-    }
-
-    /* Intelligence stack tags */
-    div[style*="INTELLIGENCE"] span {
-        font-size: 0.5rem !important;
-    }
-
-    /* Status container */
-    [data-testid="stStatusContainer"] {
-        font-size: 0.72rem !important;
-    }
+    [data-testid="block-container"] { padding: 0 1rem 3rem !important; }
+    [data-testid="block-container"] div[style*="padding:64px"] { padding: 32px 0 28px !important; }
+    [data-testid="block-container"] div[style*="Bebas Neue"] { font-size: clamp(2rem, 10vw, 3.5rem) !important; letter-spacing: 1px !important; }
+    div[data-testid="metric-container"] { padding: 14px 16px !important; }
+    [data-testid="stMetricValue"] { font-size: 1.6rem !important; }
+    [data-testid="stMetricLabel"] { font-size: 0.55rem !important; }
+    div[style*="font-size:3.8rem"] { font-size: 2.2rem !important; letter-spacing: 1px !important; }
+    div[style*="margin-top:52px"] { margin-top: 28px !important; }
+    [data-testid="stSidebar"] .stTextInput input { font-size: 0.85rem !important; padding: 12px 14px !important; }
+    div[role="radiogroup"] > label { font-size: 0.9rem !important; padding: 4px 0 !important; }
+    div[style*="padding:80px 40px"] { padding: 40px 20px !important; }
+    .stPlotlyChart { width: 100% !important; }
+    .stPyplot { width: 100% !important; }
+    [data-testid="stTabs"] { overflow-x: auto !important; }
+    div[style*="padding:24px"][style*="border-left:4px solid #800020"] { padding: 16px !important; }
+    iframe { width: 100% !important; height: auto !important; aspect-ratio: 16/9 !important; }
+    [data-testid="stStatusContainer"] { font-size: 0.72rem !important; }
 }
 
-/* Extra small screens (phones under 480px) */
 @media (max-width: 480px) {
+    [data-testid="block-container"] { padding: 0 0.5rem 2rem !important; }
+    [data-testid="stMetricValue"] { font-size: 1.3rem !important; }
+    div[style*="font-size:3.8rem"] { font-size: 1.8rem !important; }
+    div[style*="padding:28px 24px 15px"] { padding: 16px 14px 10px !important; }
+    div[style*="padding:10px 24px 24px"] { padding: 8px 14px 16px !important; }
+}
 
-    [data-testid="block-container"] {
-        padding: 0 0.5rem 2rem !important;
-    }
+/* ═══════════════════════════════════════════════════════════
+   MOBILE FIXES — VISIBILITY ISSUES
+   ═══════════════════════════════════════════════════════════ */
 
-    [data-testid="stMetricValue"] {
-        font-size: 1.3rem !important;
-    }
+/* FIX 1: Sidebar collapse arrow — cherry red background */
+[data-testid="collapsedControl"] {
+    background-color: #800020 !important;
+    color: #FFFFFF !important;
+    border-radius: 0 8px 8px 0 !important;
+    box-shadow: 2px 0 8px rgba(128,0,32,0.3) !important;
+}
+[data-testid="collapsedControl"] svg {
+    fill: #FFFFFF !important;
+    stroke: #FFFFFF !important;
+}
 
-    div[style*="font-size:3.8rem"] {
-        font-size: 1.8rem !important;
-    }
+/* FIX 2: Export to Editor CSV button */
+[data-testid="stDownloadButton"] button {
+    background-color: rgba(128,0,32,0.08) !important;
+    color: #800020 !important;
+    border: 1px solid rgba(128,0,32,0.3) !important;
+    border-radius: 8px !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+}
+[data-testid="stDownloadButton"] button:hover {
+    background-color: rgba(128,0,32,0.15) !important;
+    border-color: rgba(128,0,32,0.5) !important;
+}
 
-    div[style*="padding:28px 24px 15px"] {
-        padding: 16px 14px 10px !important;
-    }
+/* FIX 3: PLAY IN-APP button — visible text */
+[data-testid="stButton"] button {
+    background-color: #FAF9F6 !important;
+    color: #800020 !important;
+    border: 1px solid rgba(128,0,32,0.25) !important;
+    border-radius: 8px !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+}
+[data-testid="stButton"] button:hover {
+    background-color: rgba(128,0,32,0.08) !important;
+    border-color: rgba(128,0,32,0.4) !important;
+    color: #800020 !important;
+}
 
-    div[style*="padding:10px 24px 24px"] {
-        padding: 8px 14px 16px !important;
+/* FIX 4: Chart text visibility */
+.stPlotlyChart text,
+.js-plotly-plot text {
+    fill: #555555 !important;
+    color: #555555 !important;
+}
+
+@media (max-width: 768px) {
+    [data-testid="collapsedControl"] {
+        width: 28px !important;
+        height: 60px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
 }
 </style>
