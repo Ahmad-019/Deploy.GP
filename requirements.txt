@@ -11,3 +11,5 @@ arabic-reshaper
 python-bidi
 python-dotenv
 torch
+torchvision
+torchaudio
