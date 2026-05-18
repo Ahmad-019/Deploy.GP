@@ -142,44 +142,41 @@ hr { border-color: var(--border) !important; }
    MOBILE FIXES — VISIBILITY ISSUES
    ═══════════════════════════════════════════════════════════ */
 
-/* ═══════════════════════════════════════════════════════════
-   ULTIMATE FIX: ALL SIDEBAR & HEADER ICONS (MOBILE & DESKTOP)
-   ═══════════════════════════════════════════════════════════ */
-
-/* 1. Target the floating expand controls (New & Old Streamlit versions) */
-[data-testid="stSidebarCollapsedControl"] svg,
-[data-testid="stSidebarCollapsedControl"] path,
-[data-testid="collapsedControl"] svg,
-[data-testid="collapsedControl"] path {
-    fill: #1A1A1A !important;
-    stroke: #1A1A1A !important;
-    color: #1A1A1A !important;
-}
-
-/* 2. Target the mobile header menu specifically */
-header button svg,
-header button path,
-header[data-testid="stHeader"] button svg,
-header[data-testid="stHeader"] button path {
-    fill: #1A1A1A !important;
-    stroke: #1A1A1A !important; 
-    color: #1A1A1A !important;
-}
-
-/* 3. Target the 'X' close button inside the opened sidebar */
-[data-testid="stSidebar"] button svg,
-[data-testid="stSidebar"] button path {
-    fill: #1A1A1A !important;
-    stroke: #1A1A1A !important;
-    color: #1A1A1A !important;
-}
-
-/* 4. Ensure backgrounds don't block the icons */
-[data-testid="stSidebarCollapsedControl"],
-[data-testid="collapsedControl"],
-header[data-testid="stHeader"] {
+/* FIX 1: FORCE ALL SYSTEM ICONS TO BE BLACK (Mobile & Desktop) */
+header, 
+header[data-testid="stHeader"], 
+header[data-testid="stAppHeader"],
+.stAppHeader {
     background-color: transparent !important;
 }
+
+header *, 
+header[data-testid="stHeader"] *, 
+header[data-testid="stAppHeader"] *,
+.stAppHeader * {
+    color: #1A1A1A !important;
+    fill: #1A1A1A !important;
+    stroke: #1A1A1A !important;
+}
+
+[data-testid="collapsedControl"],
+[data-testid="stSidebarCollapsedControl"] {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+[data-testid="collapsedControl"] *,
+[data-testid="stSidebarCollapsedControl"] * {
+    color: #1A1A1A !important;
+    fill: #1A1A1A !important;
+}
+
+section[data-testid="stSidebar"] header *,
+section[data-testid="stSidebar"] button * {
+    color: #1A1A1A !important;
+    fill: #1A1A1A !important;
+}
+
 /* FIX 2: Export to Editor CSV button */
 [data-testid="stDownloadButton"] button {
     background-color: rgba(128,0,32,0.08) !important;
@@ -219,15 +216,6 @@ header[data-testid="stHeader"] {
     color: #555555 !important;
 }
 
-@media (max-width: 768px) {
-    [data-testid="collapsedControl"] {
-        width: 28px !important;
-        height: 60px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-}
 </style>
 """, unsafe_allow_html=True)
 
