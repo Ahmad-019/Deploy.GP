@@ -145,7 +145,7 @@ hr { border-color: var(--border) !important; }
 /* FIX 1: Sidebar collapse arrow — cherry red background */
 [data-testid="collapsedControl"] {
     background-color: #800020 !important;
-    color: #FFFFFF !important;
+    color: #000000 !important;
     border-radius: 0 8px 8px 0 !important;
     box-shadow: 2px 0 8px rgba(128,0,32,0.3) !important;
 }
