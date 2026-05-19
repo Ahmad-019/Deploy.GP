@@ -232,8 +232,6 @@ EMOTION_CONFIG = {
     "Sad":           {"color": "#2563EB", "bg": "rgba(37,99,235,0.1)",  "border": "rgba(37,99,235,0.3)",  "icon": "😢"},
     "Controversial": {"color": "#DC2626", "bg": "rgba(220,38,38,0.1)",  "border": "rgba(220,38,38,0.3)",  "icon": "🔥"},
     "Inspirational": {"color": "#7C3AED", "bg": "rgba(124,58,237,0.1)", "border": "rgba(124,58,237,0.3)", "icon": "✨"},
-    "Sarcastic":     {"color": "#6B7280", "bg": "rgba(107,114,128,0.1)", "border": "rgba(107,114,128,0.3)", "icon": "😏"},
-    "Inquiry":       {"color": "#0891B2", "bg": "rgba(8,145,178,0.1)",  "border": "rgba(8,145,178,0.3)",  "icon": "❓"},
 }
 FALLBACK_CFG = {"color": "#4A4A4A", "bg": "rgba(74,74,74,0.06)", "border": "rgba(74,74,74,0.15)", "icon": "✦"}
 
@@ -243,8 +241,6 @@ AI_RECOMMENDATIONS = {
     "Inspirational": "Viewers found high motivation and value in your content. **Recommendation:** Repurpose these segments into motivational quotes for LinkedIn/Twitter, and consider a deep-dive educational video next.",
     "Happy": "Baseline positive sentiment is very strong. **Recommendation:** Maintain your current content strategy. This is a great video to actively ask viewers to 'Like and Subscribe' during the highlight peaks.",
     "Sad": "The audience expressed strong emotional sympathy. **Recommendation:** Ensure active community management in the comment section to build a supportive bond with your viewers.",
-    "Sarcastic": "Audience irony and sarcasm detected. **Recommendation:** Acknowledge the subtext. Consider leaning into the joke in a community post or addressing the irony directly in future content.",
-    "Inquiry": "Viewers are asking for clarification or have unmet curiosity. **Recommendation:** Compile these questions and create a dedicated Q&A short or address them in the pinned comment."
 }
 
 # ═══════════════════════════════════════════════════════════
@@ -306,8 +302,6 @@ def process_intelligence(comments: List[str]):
 
 def classify_sentiment_logic(text: str):
     t = text.lower()
-    if any(x in t for x in ['كيف', 'ليش', 'شو', 'متى', 'سؤال', 'ممكن', 'وين', 'حدا فهم']): return "Inquiry"
-    if any(x in t for x in ['بمزح', 'أصلاً', 'طبعاً', 'شو هاد', 'ما شاء الله', 'هه', 'أوه', 'سخرية']): return "Sarcastic"
     if any(x in t for x in ['😂', '🤣', 'lol', 'haha', 'funny', 'هههه', 'بضحك', 'متت', 'فطست', 'لول']): return "Funny"
     if any(x in t for x in ['حلو', 'بجنن', 'رائع', 'اسطورة', 'فخم', 'رهيب', 'ابداع', 'عظمة', 'وحش', 'كفو', 'عاش', 'جميل', 'كبير']): return "Happy"
     if any(x in t for x in ['حزين', 'يقهر', 'يبكي', 'زعلت', 'حرام', 'قهر', 'كسر خاطري', 'مسكين']): return "Sad"
@@ -326,7 +320,7 @@ def classify_sentiment_logic(text: str):
 # ═══════════════════════════════════════════════════════════
 #  SMARTER TOP-3 ALGORITHM
 # ═══════════════════════════════════════════════════════════
-EMOTION_HEAT   = {"Funny": 1.4, "Controversial": 1.5, "Inspirational": 1.3, "Happy": 1.0, "Sad": 0.9, "Sarcastic": 1.2, "Inquiry": 1.4}
+EMOTION_HEAT   = {"Funny": 1.4, "Controversial": 1.5, "Inspirational": 1.3, "Happy": 1.0, "Sad": 0.9}
 MIN_WINDOW_GAP = 3
 
 def compute_smart_highlights(df: pd.DataFrame, top_n: int = 3) -> pd.DataFrame:
@@ -428,7 +422,7 @@ TARGET EMOTION
 </div>
 """, unsafe_allow_html=True)
 
-    selected_filter = st.radio("Filter by Emotion", options=["All Emotions", "Funny", "Happy", "Sad", "Controversial", "Inspirational", "Sarcastic", "Inquiry"], label_visibility="collapsed", index=0)
+    selected_filter = st.radio("Filter by Emotion", options=["All Emotions", "Funny", "Happy", "Sad", "Controversial", "Inspirational"], label_visibility="collapsed", index=0)
 
     st.markdown("""
 <div style="margin-top:28px;padding:0 4px 12px;">
