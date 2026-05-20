@@ -627,7 +627,7 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str, is_comparis
             # Unique key for breakdown chart
             st.plotly_chart(fig2, use_container_width=True, key=f"breakdown_{col_key}_{v_id}")
 
-        with tab tab2:
+        with tab2:
             st.markdown("<div style='text-align:center; font-size:0.8rem; color:var(--text-3); margin-bottom:10px;'>Most frequent words (Stop-words removed)</div>", unsafe_allow_html=True)
             text_data = " ".join(df_work_cached['Content'].tolist())
             arabic_stopwords = set(["في", "من", "على", "الى", "إلى", "و", "يا", "لا", "ما", "اللي", "كان", "بس", "تبع", "هاد", "هذا", "ان", "انا", "هو", "هي"])
