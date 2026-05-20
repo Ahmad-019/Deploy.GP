@@ -134,7 +134,7 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stAppViewContainer
     direction: {direction_css};
 }}
 
-/* ═════ ANIMATION CLASSES ═════ */
+/* ═════ ANIMATION & LAYOUT FIX CLASSES ═════ */
 .golden-card {{
     background: var(--surface-2);
     border: 1px solid var(--border);
@@ -168,8 +168,11 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stAppViewContainer
 header {{ background-color: transparent !important; }}
 [data-testid="stSidebar"] {{ background: var(--surface-1) !important; border-right: 1px solid var(--border) !important; }}
 [data-testid="stSidebar"] > div {{ padding-top: 0 !important; }}
+
+/* 💡 منع انكسار أسطر كبسات الراديو في السايد بار تماماً */
 div[role="radiogroup"] label {{ white-space: nowrap !important; }}
 div[role="radiogroup"] p {{ font-family: var(--font-body) !important; font-size: 0.75rem !important; color: var(--text-1) !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; margin: 0 !important; padding: 2px 0 !important; }}
+
 [data-testid="stSidebar"] .stTextInput label {{ color: var(--text-1) !important; font-size: 0.65rem !important; font-weight: 600 !important; letter-spacing: 1px !important; text-transform: uppercase !important; font-family: var(--font-body) !important; }}
 [data-testid="stSidebar"] .stTextInput input {{ background: var(--surface-2) !important; border: 1px solid var(--border) !important; border-radius: 8px !important; color: var(--text-1) !important; font-family: var(--font-mono) !important; font-size: 0.78rem !important; transition: border-color 0.2s !important; padding: 10px 14px !important; direction: ltr; }}
 [data-testid="stSidebar"] .stTextInput input:focus {{ border-color: var(--cherry) !important; box-shadow: 0 0 0 3px rgba(128,0,32,0.12) !important; outline: none !important; }}
@@ -304,9 +307,11 @@ def classify_sentiment_logic(text: str):
     if any(x in t_text for x in ['عظيم', 'مؤثر', 'بطل', 'فخر', 'ملهم', 'احترام']): return "Inspirational"
     return "Neutral"
 
+# 💎 المحرك الهجين المثالي: الدقة المطلقة للأجنبي والسرعة الحامية للسيرفر للعربي
 def batch_classify_hybrid_engine(df: pd.DataFrame) -> pd.DataFrame:
     if df.empty: return df
     
+    # تصنيف أولي بالكلمات المفتاحية
     df['Sentiment'] = df['Content'].apply(classify_sentiment_logic)
     neutral_mask = df['Sentiment'] == "Neutral"
     df_neutral = df[neutral_mask].copy()
@@ -314,11 +319,11 @@ def batch_classify_hybrid_engine(df: pd.DataFrame) -> pd.DataFrame:
     if df_neutral.empty:
         return df
 
-    # 💎 الحل السحري الجذري لـ ArrowInvalid: استخدام Pure Python regex بدلاً من pandas string methods
+    # فحص آمن بدون ميثودز الباندا تجنباً لـ ArrowInvalid
     arabic_pattern = re.compile(r'[\u0600-\u06FF]')
     has_arabic = any(arabic_pattern.search(str(text)) for text in df['Content'])
 
-    # 1️⃣ منطق الفيديوهات الأجنبية (الدقة الكاملة 100%)
+    # 1️⃣ منطق الفيديوهات الأجنبية (إعادة الموديل الأصلي سطر بسطر بدقة 100%)
     if not has_arabic:
         for idx, row in df_neutral.iterrows():
             try:
@@ -328,7 +333,7 @@ def batch_classify_hybrid_engine(df: pd.DataFrame) -> pd.DataFrame:
             except:
                 df.at[idx, 'Sentiment'] = "Happy"
                 
-    # 2️⃣ منطق الفيديوهات العربية (حماية السيرفر من التعليق بسبب آلاف طلبات الترجمة)
+    # 2️⃣ منطق الفيديوهات العربية (أخذ عينات دسمة لتسريع الترجمة وحماية السيرفر)
     else:
         df_neutral['len'] = df_neutral['Content'].astype(str).str.len()
         df_neutral = df_neutral.sort_values(by='len', ascending=False)
@@ -350,7 +355,7 @@ def batch_classify_hybrid_engine(df: pd.DataFrame) -> pd.DataFrame:
             except:
                 df.at[idx, 'Sentiment'] = "Happy"
                 
-        # استخدام df.at بدلاً من تخصيص Array كاملة لمنع تعارضات PyArrow النهائية
+        # ملء التعليقات المحايدة المتبقية من مشاعر الفيديو الحقيقية
         remaining_neutral = df['Sentiment'] == "Neutral"
         if remaining_neutral.any():
             valid_sentiments = df[df['Sentiment'] != "Neutral"]['Sentiment'].tolist()
@@ -447,7 +452,7 @@ with st.sidebar:
 </div>
 """, unsafe_allow_html=True)
 
-    # 💡 التعديل هنا: إرجاع كلمة (Comments) 
+    # 💡 تم إرجاع كلمة (Comments / تعليق) كما طلبت لمنع الإبهام
     depth_options = {
         t("🚀 Quick Sample (5k Comments)", "🚀 عينة سريعة (5k تعليق)"): 5000, 
         t("⚖️ Standard Mode (15k Comments)", "⚖️ الوضع القياسي (15k تعليق)"): 15000, 
@@ -553,7 +558,11 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str, is_comparis
     if not any(h['v_id'] == v_id for h in st.session_state.watch_history):
         st.session_state.watch_history.append({"v_id": v_id, "time": datetime.now().strftime("%Y-%m-%d %H:%M")})
 
+    if f"start_{v_id}" not in st.session_state:
+        st.session_state[f"start_{v_id}"] = 0
+
     if state_key_df not in st.session_state or st.session_state.get(state_key_depth) != depth:
+        st.session_state[f"start_{v_id}"] = 0
         with st.status(t("⚙️ Analysing Video...", "⚙️ جاري تحليل الفيديو..."), expanded=True) as status:
             raw = fetch_comments_refined(v_id, max_results=depth)
             st.session_state[state_key_raw_len] = len(raw)
@@ -567,7 +576,7 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str, is_comparis
             st.session_state[state_key_df] = df_work
             st.session_state[state_key_depth] = depth
             
-            # 💡 جملة الاكتملال بدون ID عشان ما تكسر السطر
+            # جملة بدون اسم أو ID فيديو لضمان المحاذاة الكاملة
             status.update(label=t("✦ Analysis Complete", "✦ اكتمل التحليل"), state="complete", expanded=False)
 
     df_work_cached = st.session_state[state_key_df].copy()
@@ -603,8 +612,8 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str, is_comparis
             csv = highlights[['Timestamp', 'Sentiment', 'Count', 'ScorePct']].to_csv(index=False).encode('utf-8')
             st.download_button(t("📥 Export", "📥 تصدير"), data=csv, file_name=f'highlights_{v_id}.csv', mime='text/csv', use_container_width=True, key=f"dl_{col_key}_{v_id}")
 
-        # 💡 بدون key لمنع TypeError
-        st.video(f"https://www.youtube.com/watch?v={v_id}", start_time=st.session_state.get(f"start_{v_id}", 0))
+        # مشغل آمن بدون كيبورد لمنع تضارب الأنواع
+        st.video(f"https://www.youtube.com/watch?v={v_id}", start_time=st.session_state[f"start_{v_id}"])
 
         rank_meta = [
             {"en": "PEAK MOMENT", "ar": "لحظة الذروة",  "crown": "👑", "border_top": "var(--cherry)", "pulse": True},
@@ -624,7 +633,7 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str, is_comparis
             pulse_class = "pulse-ring" if meta.get("pulse") else ""
 
             with cols[i]:
-                # 💡 التعديل هنا: زر OPEN YOUTUBE بجانب الوقت بشكل أنيق
+                # كارد اللحظة بتأثير الـ 3D والـ Pulse
                 st.markdown(f"""
 <div class="golden-card {pulse_class}" style="border-top:4px solid {meta['border_top']}; border-bottom:0; border-bottom-left-radius:0; border-bottom-right-radius:0; padding:20px 20px 10px;">
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:15px;">
@@ -636,9 +645,9 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str, is_comparis
 </div>
 <br>
 <a href="{yt_link}" target="_blank" class="highlight-link" style="text-decoration:none; display:inline-block; margin-bottom:5px;">
-<div style="font-family:'Bebas Neue',sans-serif;font-size:3.2rem;letter-spacing:2px;line-height:1;color:var(--text-1);display:flex;align-items:center;gap:12px;transition:all 0.2s ease;">
+<div style="font-family:'Bebas Neue',sans-serif;font-size:2.8rem;letter-spacing:2px;line-height:1;color:var(--text-1);display:flex;align-items:center;gap:12px;transition:all 0.2s ease;">
 <span style="direction:ltr; display:inline-block;">{row['Timestamp']}</span>
-<span style="background:rgba(128,0,32,0.08);color:var(--cherry);font-family:var(--font-body);font-size:0.8rem;padding:6px 12px;border-radius:8px;font-weight:700;letter-spacing:0.5px;display:flex;align-items:center;">⧉ {t("OPEN YOUTUBE", "فتح يوتيوب")}</span>
+<span style="background:rgba(128,0,32,0.08);color:var(--cherry);font-family:var(--font-body);font-size:0.8rem;padding:4px 12px;border-radius:8px;font-weight:700;letter-spacing:0.5px;display:flex;align-items:center;">⧉ {t("OPEN YOUTUBE", "فتح يوتيوب")}</span>
 </div>
 </a>
 </div>
