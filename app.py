@@ -363,7 +363,7 @@ with st.sidebar:
 
     target_url = st.text_input(
         "YouTube URL",
-        placeholder="http://youtube.com/watch?v=...",
+        placeholder="https://www.youtube.com/watch?v=...",
         label_visibility="collapsed",
         key="yt_input_1"
     )
@@ -518,7 +518,7 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str, is_comparis
             st.session_state[state_key_depth] = depth
             st.session_state[f"trigger_confetti_{v_id}"] = True
             
-            # 💡 التعديل هون: وحدت الكلمة عشان ما تكسر السطر بالمقارنة
+            # تم إزالة معرف الفيديو لعدم كسر السطر في وضع المقارنة
             status.update(label=t("✦ Analysis Complete", "✦ اكتمل التحليل"), state="complete", expanded=False)
 
     if st.session_state.get(f"trigger_confetti_{v_id}", False):
@@ -558,7 +558,8 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str, is_comparis
             csv = highlights[['Timestamp', 'Sentiment', 'Count', 'ScorePct']].to_csv(index=False).encode('utf-8')
             st.download_button(t("📥 Export", "📥 تصدير"), data=csv, file_name=f'highlights_{v_id}.csv', mime='text/csv', use_container_width=True, key=f"dl_{col_key}_{v_id}")
 
-        st.video(f"https://www.youtube.com/watch?v={v_id}", start_time=st.session_state[f"start_{v_id}"], key=f"vid_player_{col_key}_{v_id}")
+        # 💡 التعديل هنا: إزالة الـ key= و استخدام الرابط الرسمي لتجنب رسالة الـ TypeError
+        st.video(f"https://www.youtube.com/watch?v={v_id}", start_time=st.session_state[f"start_{v_id}"])
 
         rank_meta = [
             {"en": "PEAK MOMENT", "ar": "لحظة الذروة",  "crown": "👑", "border_top": "var(--cherry)", "pulse": True},
@@ -574,11 +575,11 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str, is_comparis
             cfg  = EMOTION_CONFIG.get(row['Sentiment'], FALLBACK_CFG)
             meta = rank_meta[i] if i < len(rank_meta) else rank_meta[-1]
             pct  = int(row['ScorePct'])
-            yt_link = f"https://youtu.be/{v_id}?t={int(row['Seconds'])}"
+            yt_link = f"https://www.youtube.com/watch?v={v_id}&t={int(row['Seconds'])}s"
             pulse_class = "pulse-ring" if meta.get("pulse") else ""
 
             with cols[i]:
-                # 💡 التعديل هون: رجعت كبسة OPEN YOUTUBE الأصلية زي اللي بالصورة
+                # 💡 التعديل هنا: زر OPEN YOUTUBE بجانب الوقت بشكل أنيق
                 st.markdown(f"""
 <div class="golden-card {pulse_class}" style="border-top:4px solid {meta['border_top']}; border-bottom:0; border-bottom-left-radius:0; border-bottom-right-radius:0; padding:20px 20px 10px;">
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:15px;">
@@ -651,7 +652,6 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str, is_comparis
 
     if emotion_filter == "All Emotions":
         st.markdown("<br>", unsafe_allow_html=True)
-        # 💡 تم حل خطأ Syntax Error من السطر التالي:
         tab1, tab2 = st.tabs([t("🎭 Breakdown", "🎭 تفصيل المشاعر"), t("☁️ Words", "☁️ الكلمات المفتاحية")])
 
         with tab1:
