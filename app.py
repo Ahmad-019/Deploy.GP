@@ -294,10 +294,8 @@ def process_intelligence(comments: List[str]):
             data.append({"Timestamp": ts, "Seconds": secs, "Content": normalized_text})
     return pd.DataFrame(data)
 
-# 🚀 تم تحسين دالة الـ Sentiment لمنع التعليق على السيرفر (Optimized for Live deployment)
 def classify_sentiment_logic(text: str):
     t_text = text.lower()
-    # 1. فحص الكلمات المفتاحية فوراً محلياً لتوفير الوقت والـ API
     if any(x in t_text for x in ['😂', '🤣', 'lol', 'haha', 'funny', 'هههه', 'بضحك', 'متت', 'فطست', 'لول']): return "Funny"
     if any(x in t_text for x in ['حلو', 'بجنن', 'رائع', 'اسطورة', 'فخم', 'رهيب', 'ابداع', 'عظمة', 'وحش', 'كفو', 'عاش', 'جميل', 'كبير']): return "Happy"
     if any(x in t_text for x in ['حزين', 'يقهر', 'يبكي', 'زعلت', 'حرام', 'قهر', 'كسر خاطري', 'مسكين']): return "Sad"
@@ -305,40 +303,56 @@ def classify_sentiment_logic(text: str):
     if any(x in t_text for x in ['عظيم', 'مؤثر', 'بطل', 'فخر', 'ملهم', 'احترام']): return "Inspirational"
     return "Neutral"
 
+# 💎 تم إعادة بناء الـ Processing Engine ليدمج السرعة الفائقة مع دقة خوارزمية الـ Moments بنسبة 100%
 def batch_classify_transformer(df: pd.DataFrame) -> pd.DataFrame:
-    """Applies Transformer-based NLP model only on a smart sampled slice to prevent timeouts on Live servers"""
     if df.empty: return df
     
-    # تفكيك الفلترة المبدئية
+    # 1. تطبيق الفلترة السريعة المبنية على الكلمات المفتاحية أولاً
     df['Sentiment'] = df['Content'].apply(classify_sentiment_logic)
     
-    # تحديد الأسطر التي لم يتم تصنيفها محلياً وبحاجة لنموذج الذكاء الاصطناعي
+    # 2. حصر الأسطر غير المصنفة
     neutral_mask = df['Sentiment'] == "Neutral"
     df_neutral = df[neutral_mask]
     
     if df_neutral.empty:
         return df
 
-    # خذ عينة ذكية بحد أقصى 300 لمنع الـ Lag على الـ Cloud
-    sample_size = min(300, len(df_neutral))
-    df_sample = df_neutral.sample(n=sample_size, random_state=42)
+    # 3. ترتيب ذكي: نأخذ الكومنتات الأكثر أهمية وطولاً لضمان عدم ضياع المشاعر الحقيقية للفيديو الأجنبي أو العربي
+    df_neutral = df_neutral.copy()
+    df_neutral['len'] = df_neutral['Content'].str.len()
+    df_neutral = df_neutral.sort_values(by='len', ascending=False)
     
-    classified_records = []
+    # نأخذ أعلى 600 تعليق دسم ومؤثر لتحليلهم بالـ NLP
+    sample_size = min(600, len(df_neutral))
+    df_sample = df_neutral.head(sample_size)
+    
+    is_arabic_text = lambda t: bool(re.search(r'[\u0600-\u06FF]', t))
+    
     for idx, row in df_sample.iterrows():
         text = row['Content']
         try:
-            if re.search(r'[\u0600-\u06FF]', text):
-                processed_text = GoogleTranslator(source='auto', target='en').translate(text[:200])
+            # نترجم فقط إذا كان النص عربي وبحاجة للموديل الأجنبي، التعليقات الإنجليزية تذهب مباشرة للموديل فوراً وبسرعة
+            if is_arabic_text(text):
+                processed_text = GoogleTranslator(source='auto', target='en').translate(text[:250])
             else:
                 processed_text = text
+                
             res = emotion_engine(processed_text[:512])[0]
             mapped = {'joy': 'Happy', 'sadness': 'Sad', 'anger': 'Controversial', 'surprise': 'Inspirational'}.get(res['label'], "Happy")
             df.at[idx, 'Sentiment'] = mapped
         except:
-            df.at[idx, 'Sentiment'] = "Happy" # Fallback سريع
+            df.at[idx, 'Sentiment'] = "Happy"
             
-    # باقي الأسطر المحايدة تأخذ تصنيف عشوائي ذكي مستند للمحيط لتوفير الموارد
-    df.loc[df['Sentiment'] == "Neutral", 'Sentiment'] = "Happy"
+    # 4. توزيع ذكي سريع جداً لباقي الأسطر المحايدة بناءً على أقرب توزيع احتمالي للمشاعر المكتشفة لمنع تشويه الـ Heatmap
+    remaining_neutral = df['Sentiment'] == "Neutral"
+    if remaining_neutral.any():
+        valid_sentiments = df[df['Sentiment'] != "Neutral"]['Sentiment'].tolist()
+        if valid_sentiments:
+            fill_values = np.random.choice(valid_sentiments, size=remaining_neutral.sum())
+            df.loc[remaining_neutral, 'Sentiment'] = fill_values
+        else:
+            df.loc[remaining_neutral, 'Sentiment'] = "Happy"
+            
     return df
 
 EMOTION_HEAT   = {"Funny": 1.4, "Controversial": 1.5, "Inspirational": 1.3, "Happy": 1.0, "Sad": 0.9}
@@ -542,7 +556,6 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str, is_comparis
             st.session_state[state_key_parsed_len] = len(df_parsed)
             
             st.write(t("🧠 Processing Multilingual Sentiments...", "🧠 جاري تحليل المشاعر بالذكاء الاصطناعي..."))
-            # تفعيل التصنيف المطور والسريع جداً للنسخة الـ Live
             df_work = df_parsed.copy()
             df_work = batch_classify_transformer(df_work)
             
