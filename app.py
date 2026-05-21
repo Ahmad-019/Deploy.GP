@@ -126,63 +126,75 @@ st.markdown(f"""
   --font-mono:    'JetBrains Mono', monospace;
 }}
 *, *::before, *::after {{ box-sizing: border-box; }}
+
+/* NO direction on html/body — this is the key fix */
 html, body, [data-testid="stAppViewContainer"], [data-testid="stAppViewContainer"] > .main {{
     background-color: var(--surface-0) !important;
     color: var(--text-1) !important;
     font-family: var(--font-body) !important;
-    direction: {direction_css};
 }}
 
 /* ═══════════════════════════════════════════════════════════
    ARABIC RTL FIX — SIDEBAR ALWAYS STAYS ON THE LEFT
    ═══════════════════════════════════════════════════════════ */
 
-/* Force sidebar to always be on the left side */
+/* Force the entire app wrapper to always be LTR layout */
+[data-testid="stAppViewContainer"] {{
+    direction: ltr !important;
+    flex-direction: row !important;
+}}
+
+/* Force the main content area direction based on language */
+[data-testid="stAppViewContainer"] > section.main {{
+    direction: {direction_css} !important;
+}}
+
+/* Force all block containers inside main to follow language direction */
+[data-testid="block-container"] {{
+    direction: {direction_css} !important;
+}}
+
+/* Sidebar always LTR and always left */
 [data-testid="stSidebar"] {{
     direction: ltr !important;
-    order: -1 !important;
+    order: 0 !important;
+    background: var(--surface-1) !important;
+    border-right: 1px solid var(--border) !important;
 }}
-
-/* Force sidebar internal content to LTR */
 [data-testid="stSidebar"] > div {{
     direction: ltr !important;
+    overflow-y: auto !important;
+    padding-top: 0 !important;
 }}
-
 [data-testid="stSidebarContent"] {{
     direction: ltr !important;
     overflow-y: auto !important;
 }}
-
-/* Keep sidebar text left-aligned */
 [data-testid="stSidebar"] * {{
     text-align: left !important;
 }}
 
-/* Fix the collapse/expand arrow visibility in RTL */
+/* Collapse arrow — always visible and always on correct side */
 [data-testid="collapsedControl"] {{
     direction: ltr !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 999999 !important;
     display: flex !important;
+}}
+[data-testid="collapsedControl"] button {{
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: flex !important;
+}}
+[data-testid="stSidebarCollapsedControl"] {{
+    direction: ltr !important;
     visibility: visible !important;
     opacity: 1 !important;
     z-index: 999999 !important;
 }}
-
-[data-testid="collapsedControl"] button {{
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}}
-
-/* Fix main content direction */
-.main .block-container {{
-    direction: {direction_css} !important;
-}}
-
-/* Fix the app layout to keep sidebar left in RTL */
-[data-testid="stAppViewContainer"] {{
-    flex-direction: row !important;
-}}
 /* ═══════════════════════════════════════════════════════════ */
+
 .golden-card {{
     background: var(--surface-2);
     border: 1px solid var(--border);
@@ -214,12 +226,6 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stAppViewContainer
 [data-testid="block-container"] {{ padding: 0 3rem 5rem !important; max-width: 1400px; }}
 #MainMenu, footer {{ visibility: hidden; }}
 header {{ background-color: transparent !important; }}
-
-[data-testid="stSidebar"] {{
-    background: var(--surface-1) !important;
-    border-right: 1px solid var(--border) !important;
-}}
-[data-testid="stSidebar"] > div {{ padding-top: 0 !important; }}
 
 div[role="radiogroup"] label {{ white-space: nowrap !important; }}
 div[role="radiogroup"] p {{
@@ -318,23 +324,23 @@ section[data-testid="stSidebar"] header *, section[data-testid="stSidebar"] butt
 # ═══════════════════════════════════════════════════════════
 #  EMOTION CONFIG & STRATEGIC RECOMMENDATIONS
 # ═══════════════════════════════════════════════════════════
-EMOTION_CONFIG = {
-    "Funny":         {"color": "#D97706", "bg": "rgba(217,119,6,0.1)",  "border": "rgba(217,119,6,0.3)",  "icon": "😂", "ar": "مضحك"},
-    "Happy":         {"color": "#059669", "bg": "rgba(5,150,105,0.1)",  "border": "rgba(5,150,105,0.3)",  "icon": "😊", "ar": "سعيد"},
-    "Sad":           {"color": "#2563EB", "bg": "rgba(37,99,235,0.1)",  "border": "rgba(37,99,235,0.3)",  "icon": "😢", "ar": "حزين"},
-    "Controversial": {"color": "#DC2626", "bg": "rgba(220,38,38,0.1)",  "border": "rgba(220,38,38,0.3)",  "icon": "🔥", "ar": "جدلي"},
-    "Inspirational": {"color": "#7C3AED", "bg": "rgba(124,58,237,0.1)", "border": "rgba(124,58,237,0.3)", "icon": "✨", "ar": "ملهم"},
-}
-FALLBACK_CFG = {"color": "#4A4A4A", "bg": "rgba(74,74,74,0.06)", "border": "rgba(74,74,74,0.15)", "icon": "✦", "ar": "عادي"}
+EMOTION_CONFIG = {{
+    "Funny":         {{"color": "#D97706", "bg": "rgba(217,119,6,0.1)",  "border": "rgba(217,119,6,0.3)",  "icon": "😂", "ar": "مضحك"}},
+    "Happy":         {{"color": "#059669", "bg": "rgba(5,150,105,0.1)",  "border": "rgba(5,150,105,0.3)",  "icon": "😊", "ar": "سعيد"}},
+    "Sad":           {{"color": "#2563EB", "bg": "rgba(37,99,235,0.1)",  "border": "rgba(37,99,235,0.3)",  "icon": "😢", "ar": "حزين"}},
+    "Controversial": {{"color": "#DC2626", "bg": "rgba(220,38,38,0.1)",  "border": "rgba(220,38,38,0.3)",  "icon": "🔥", "ar": "جدلي"}},
+    "Inspirational": {{"color": "#7C3AED", "bg": "rgba(124,58,237,0.1)", "border": "rgba(124,58,237,0.3)", "icon": "✨", "ar": "ملهم"}},
+}}
+FALLBACK_CFG = {{"color": "#4A4A4A", "bg": "rgba(74,74,74,0.06)", "border": "rgba(74,74,74,0.15)", "icon": "✦", "ar": "عادي"}}
 
 def get_rec_text(emotion: str) -> str:
-    recs = {
+    recs = {{
         "Funny": ("The audience engaged exceptionally well with the comedic moments. Extract highlights for TikTok.", "تفاعل الجمهور بشكل استثنائي مع اللحظات الكوميدية. استخرج هذه المقاطع لـ TikTok/Reels للوصول السريع."),
         "Controversial": ("High level of debate. Consider filming a follow-up Q&A video.", "مستوى عالٍ من الجدل. فكر في تصوير فيديو 'سؤال وجواب' في غضون 48 ساعة للرد على استفسارات الجمهور."),
         "Inspirational": ("Viewers found high motivation. Repurpose these segments into quotes.", "وجد المشاهدون تحفيزاً عالياً. أعد استخدام هذه المقاطع كاقتباسات تحفيزية على منصات التواصل الاجتماعي."),
         "Happy": ("Baseline positive sentiment is strong. Maintain your current content strategy.", "المشاعر الإيجابية قوية جداً. حافظ على استراتيجيتك الحالية واطلب من المشاهدين الاشتراك وقت ذروة المشهد."),
         "Sad": ("Strong emotional sympathy. Ensure active community management.", "تعاطف عاطفي قوي. تأكد من إدارة التعليقات بشكل نشط لبناء رابطة قوية مع جمهورك الداعم.")
-    }
+    }}
     en, ar = recs.get(emotion, ("Maintain current strategy.", "حافظ على استراتيجية المحتوى الحالية."))
     return t(en, ar)
 
@@ -377,7 +383,7 @@ def fetch_comments_refined(video_id: str, max_results: int):
 
 def process_intelligence(comments: List[str]):
     data = []
-    pattern = r'(\d{1,2}:\d{2}(?::\d{2})?)'
+    pattern = r'(\d{{1,2}}:\d{{2}}(?::\d{{2}})?)'
     arabic_to_english_digits = str.maketrans('٠١٢٣٤٥٦٧٨٩', '0123456789')
     for text in comments:
         normalized_text = str(text).translate(arabic_to_english_digits)
@@ -386,7 +392,7 @@ def process_intelligence(comments: List[str]):
             ts = matches[0]
             pts = list(map(int, ts.split(':')))
             secs = pts[0]*3600 + pts[1]*60 + pts[2] if len(pts) == 3 else pts[0]*60 + pts[1]
-            data.append({"Timestamp": ts, "Seconds": secs, "Content": normalized_text})
+            data.append({{"Timestamp": ts, "Seconds": secs, "Content": normalized_text}})
     return pd.DataFrame(data)
 
 def classify_sentiment_logic(text: str):
@@ -407,10 +413,10 @@ def batch_classify_hybrid_engine(df: pd.DataFrame) -> pd.DataFrame:
 
     arabic_pattern = re.compile(r'[\u0600-\u06FF]')
     has_arabic = any(arabic_pattern.search(str(text)) for text in df['Content'])
-    emotion_map = {
+    emotion_map = {{
         'joy': 'Happy', 'sadness': 'Sad', 'anger': 'Controversial',
         'disgust': 'Controversial', 'fear': 'Sad', 'surprise': 'Inspirational', 'neutral': 'Neutral'
-    }
+    }}
 
     if not has_arabic:
         for idx, row in df_neutral.iterrows():
@@ -438,7 +444,7 @@ def batch_classify_hybrid_engine(df: pd.DataFrame) -> pd.DataFrame:
         df.loc[df['Sentiment'] == "Neutral", 'Sentiment'] = "Neutral"
     return df
 
-EMOTION_HEAT   = {"Funny": 1.4, "Controversial": 1.5, "Inspirational": 1.3, "Happy": 1.0, "Sad": 0.9}
+EMOTION_HEAT   = {{"Funny": 1.4, "Controversial": 1.5, "Inspirational": 1.3, "Happy": 1.0, "Sad": 0.9}}
 MIN_WINDOW_GAP = 3
 
 def compute_smart_highlights(df: pd.DataFrame, top_n: int = 3) -> pd.DataFrame:
@@ -456,7 +462,7 @@ def compute_smart_highlights(df: pd.DataFrame, top_n: int = 3) -> pd.DataFrame:
         diversity_b  = 1 + (unique_em - 1) * 0.15
         avg_heat     = sum(EMOTION_HEAT.get(e, 1.0) for e in grp['Sentiment']) / count
         raw_score    = count * avg_heat * diversity_b
-        records.append({'Window': window, 'Timestamp': dominant_ts, 'Seconds': exact_secs, 'Sentiment': dominant_em, 'Count': count, 'RawScore': raw_score, 'Diversity': unique_em})
+        records.append({{'Window': window, 'Timestamp': dominant_ts, 'Seconds': exact_secs, 'Sentiment': dominant_em, 'Count': count, 'RawScore': raw_score, 'Diversity': unique_em}})
 
     scored = pd.DataFrame(records).sort_values('RawScore', ascending=False)
     picked = []
@@ -465,7 +471,7 @@ def compute_smart_highlights(df: pd.DataFrame, top_n: int = 3) -> pd.DataFrame:
         if len(picked) == top_n: break
 
     if len(picked) < top_n:
-        already = {p['Window'] for p in picked}
+        already = {{p['Window'] for p in picked}}
         for _, row in scored.iterrows():
             if row['Window'] not in already: picked.append(row.to_dict()); already.add(row['Window'])
             if len(picked) == top_n: break
@@ -502,7 +508,7 @@ with st.sidebar:
             st.caption(t("No recent analysis found.", "لا يوجد سجل سابق."))
         else:
             for item in reversed(st.session_state.watch_history):
-                st.markdown(f"**ID:** `{item['v_id']}`<br><span style='font-size:0.7em;color:var(--text-3);'>{item['time']}</span>", unsafe_allow_html=True)
+                st.markdown(f"**ID:** `{{item['v_id']}}`<br><span style='font-size:0.7em;color:var(--text-3);'>{{item['time']}}</span>", unsafe_allow_html=True)
                 st.markdown("---")
 
     st.markdown(f"""
@@ -513,11 +519,11 @@ with st.sidebar:
 </div>
 """, unsafe_allow_html=True)
 
-    depth_mapping = {
+    depth_mapping = {{
         5000: t("🚀 Quick Sample (5k Comments)", "🚀 عينة سريعة (5k تعليق)"),
         15000: t("⚖️ Standard Mode (15k Comments)", "⚖️ الوضع القياسي (15k تعليق)"),
         50000: t("🕵️‍♂️ Deep Scan (50k Comments)", "🕵️‍♂️ فحص عميق (50k تعليق)")
-    }
+    }}
     target_max_results = st.radio("Depth", options=[5000, 15000, 50000], format_func=lambda x: depth_mapping[x], label_visibility="collapsed", index=0)
 
     st.markdown(f"""
@@ -531,7 +537,7 @@ with st.sidebar:
     em_opts = ["All Emotions", "Funny", "Happy", "Sad", "Controversial", "Inspirational"]
     def format_emotion(em):
         if not st.session_state.is_arabic: return em
-        return {"All Emotions": "جميع المشاعر", "Funny": "مضحك", "Happy": "سعيد", "Sad": "حزين", "Controversial": "جدلي", "Inspirational": "ملهم"}.get(em, em)
+        return {{"All Emotions": "جميع المشاعر", "Funny": "مضحك", "Happy": "سعيد", "Sad": "حزين", "Controversial": "جدلي", "Inspirational": "ملهم"}}.get(em, em)
 
     selected_filter = st.radio("Filter", options=em_opts, format_func=format_emotion, label_visibility="collapsed", index=0)
 
@@ -552,8 +558,8 @@ with st.sidebar:
     for tag, label in stack_items:
         st.markdown(f"""
 <div style="display:flex;align-items:center;gap:10px;padding:7px 4px;border-bottom:1px solid var(--border);">
-<span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:600;background:rgba(128,0,32,0.08);border:1px solid rgba(128,0,32,0.18);color:var(--cherry);border-radius:4px;padding:2px 6px;flex-shrink:0;">{tag}</span>
-<span style="font-size:0.78rem;font-weight:600;color:var(--text-1);">{label}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:600;background:rgba(128,0,32,0.08);border:1px solid rgba(128,0,32,0.18);color:var(--cherry);border-radius:4px;padding:2px 6px;flex-shrink:0;">{{tag}}</span>
+<span style="font-size:0.78rem;font-weight:600;color:var(--text-1);">{{label}}</span>
 </div>
 """, unsafe_allow_html=True)
 
@@ -585,17 +591,17 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 def section_header(icon: str, title: str, subtitle: str = ""):
-    sub_html = f"<div style='font-size:0.78rem;color:var(--text-3);margin-top:3px;font-family:var(--font-body);font-weight:600;'>{subtitle}</div>" if subtitle else ""
+    sub_html = f"<div style='font-size:0.78rem;color:var(--text-3);margin-top:3px;font-family:var(--font-body);font-weight:600;'>{{subtitle}}</div>" if subtitle else ""
     title_font = "'Bebas Neue', sans-serif" if not st.session_state.is_arabic else "var(--font-body)"
     letter_space = "2px" if not st.session_state.is_arabic else "0px"
     st.markdown(f"""
 <div style="display:flex;align-items:flex-end;gap:16px;margin-bottom:20px;margin-top:52px;">
 <div style="width:44px;height:44px;flex-shrink:0;background:rgba(128,0,32,0.08);border:1px solid rgba(128,0,32,0.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;">
-{icon}
+{{icon}}
 </div>
 <div>
-<div style="font-family:{title_font};font-weight:700;font-size:1.45rem;letter-spacing:{letter_space};color:var(--text-1);line-height:1;">{title}</div>
-{sub_html}
+<div style="font-family:{{title_font}};font-weight:700;font-size:1.45rem;letter-spacing:{{letter_space}};color:var(--text-1);line-height:1;">{{title}}</div>
+{{sub_html}}
 </div>
 <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--border-hi),transparent);margin-bottom:8px;"></div>
 </div>
@@ -605,25 +611,25 @@ def section_header(icon: str, title: str, subtitle: str = ""):
 #  DASHBOARD RENDER FUNCTION
 # ═══════════════════════════════════════════════════════════
 def render_video_analysis(url: str, depth: int, emotion_filter: str):
-    vid_match = re.search(r"(?:v=|\/|embed\/|shorts\/)([0-9A-Za-z_-]{11})", url)
+    vid_match = re.search(r"(?:v=|\/|embed\/|shorts\/)([0-9A-Za-z_-]{{11}})", url)
     if not vid_match:
-        st.error(f"⚠️ Invalid URL: {url}")
+        st.error(f"⚠️ Invalid URL: {{url}}")
         return
 
     v_id = vid_match.group(1)
-    state_key_df = f"df_{v_id}"
-    state_key_depth = f"depth_{v_id}"
-    state_key_raw_len = f"raw_len_{v_id}"
-    state_key_parsed_len = f"parsed_len_{v_id}"
+    state_key_df = f"df_{{v_id}}"
+    state_key_depth = f"depth_{{v_id}}"
+    state_key_raw_len = f"raw_len_{{v_id}}"
+    state_key_parsed_len = f"parsed_len_{{v_id}}"
 
     if not any(h['v_id'] == v_id for h in st.session_state.watch_history):
-        st.session_state.watch_history.append({"v_id": v_id, "time": datetime.now().strftime("%Y-%m-%d %H:%M")})
+        st.session_state.watch_history.append({{"v_id": v_id, "time": datetime.now().strftime("%Y-%m-%d %H:%M")}})
 
-    if f"start_{v_id}" not in st.session_state:
-        st.session_state[f"start_{v_id}"] = 0
+    if f"start_{{v_id}}" not in st.session_state:
+        st.session_state[f"start_{{v_id}}"] = 0
 
     if state_key_df not in st.session_state or st.session_state.get(state_key_depth) != depth:
-        st.session_state[f"start_{v_id}"] = 0
+        st.session_state[f"start_{{v_id}}"] = 0
         with st.status(t("⚙️ Analysing Video...", "⚙️ جاري تحليل الفيديو..."), expanded=True) as status:
             raw = fetch_comments_refined(v_id, max_results=depth)
             st.session_state[state_key_raw_len] = len(raw)
@@ -645,14 +651,14 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str):
         df_f = df_f[df_f['Sentiment'] == emotion_filter].copy()
 
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric(t("Comments Sampled", "تعليقات مسحوبة"), f"{raw_len:,}")
-    c2.metric(t("Timestamped", "مرتبطة بوقت"),      f"{parsed_len:,}")
-    c3.metric(t("Emotive Signals", "إشارات عاطفية"),  f"{len(df_f):,}")
+    c1.metric(t("Comments Sampled", "تعليقات مسحوبة"), f"{{raw_len:,}}")
+    c2.metric(t("Timestamped", "مرتبطة بوقت"),      f"{{parsed_len:,}}")
+    c3.metric(t("Emotive Signals", "إشارات عاطفية"),  f"{{len(df_f):,}}")
     c4.metric(t("Confidence", "الدقة"),       "96.4%")
 
     col_hdr_1, col_hdr_2 = st.columns([3, 1])
     with col_hdr_1:
-        section_header("🏆", t("GOLDEN MOMENT", "اللحظة الذهبية"), f"Video: {v_id}")
+        section_header("🏆", t("GOLDEN MOMENT", "اللحظة الذهبية"), f"Video: {{v_id}}")
 
     if df_f.empty:
         st.info(t("No emotive peaks detected for your selection.", "لم يتم العثور على ذروات عاطفية لهذا الاختيار."))
@@ -662,14 +668,14 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str):
         with col_hdr_2:
             st.markdown("<div style='margin-top: 52px;'></div>", unsafe_allow_html=True)
             csv = highlights[['Timestamp', 'Sentiment', 'Count', 'ScorePct']].to_csv(index=False).encode('utf-8')
-            st.download_button(t("📥 Export", "📥 تصدير"), data=csv, file_name=f'highlights_{v_id}.csv', mime='text/csv', use_container_width=True, key=f"dl_{v_id}")
+            st.download_button(t("📥 Export", "📥 تصدير"), data=csv, file_name=f'highlights_{{v_id}}.csv', mime='text/csv', use_container_width=True, key=f"dl_{{v_id}}")
 
-        st.video(f"https://www.youtube.com/watch?v={v_id}", start_time=st.session_state[f"start_{v_id}"])
+        st.video(f"https://www.youtube.com/watch?v={{v_id}}", start_time=st.session_state[f"start_{{v_id}}"])
 
         rank_meta = [
-            {"en": "PEAK MOMENT", "ar": "لحظة الذروة",  "crown": "👑", "border_top": "var(--cherry)", "pulse": True},
-            {"en": "RUNNER-UP",   "ar": "المركز الثاني",    "crown": "🥈", "border_top": "var(--cherry-lt)", "pulse": False},
-            {"en": "THIRD SPIKE", "ar": "المركز الثالث",  "crown": "🥉", "border_top": "var(--text-3)", "pulse": False},
+            {{"en": "PEAK MOMENT", "ar": "لحظة الذروة",  "crown": "👑", "border_top": "var(--cherry)", "pulse": True}},
+            {{"en": "RUNNER-UP",   "ar": "المركز الثاني",    "crown": "🥈", "border_top": "var(--cherry-lt)", "pulse": False}},
+            {{"en": "THIRD SPIKE", "ar": "المركز الثالث",  "crown": "🥉", "border_top": "var(--text-3)", "pulse": False}},
         ]
 
         num_cols = 3
@@ -680,49 +686,49 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str):
             cfg  = EMOTION_CONFIG.get(row['Sentiment'], FALLBACK_CFG)
             meta = rank_meta[i] if i < len(rank_meta) else rank_meta[-1]
             pct  = int(row['ScorePct'])
-            yt_link = f"https://www.youtube.com/watch?v={v_id}&t={int(row['Seconds'])}s"
+            yt_link = f"https://www.youtube.com/watch?v={{v_id}}&t={{int(row['Seconds'])}}s"
             pulse_class = "pulse-ring" if meta.get("pulse") else ""
 
             with cols[i]:
                 st.markdown(f"""
-<div class="golden-card {pulse_class}" style="border-top:4px solid {meta['border_top']}; border-bottom:0; border-bottom-left-radius:0; border-bottom-right-radius:0; padding:20px 20px 10px;">
+<div class="golden-card {{pulse_class}}" style="border-top:4px solid {{meta['border_top']}}; border-bottom:0; border-bottom-left-radius:0; border-bottom-right-radius:0; padding:20px 20px 10px;">
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:15px;">
-<div style="font-family:var(--font-body);font-size:0.6rem;font-weight:700;letter-spacing:1px;color:var(--text-3);">{t(meta['en'], meta['ar'])}</div>
-<div style="font-size:1.1rem;">{meta['crown']}</div>
+<div style="font-family:var(--font-body);font-size:0.6rem;font-weight:700;letter-spacing:1px;color:var(--text-3);">{{t(meta['en'], meta['ar'])}}</div>
+<div style="font-size:1.1rem;">{{meta['crown']}}</div>
 </div>
-<div style="display:inline-flex;align-items:center;gap:6px;background:{cfg['bg']};border:1px solid {cfg['border']};border-radius:6px;padding:4px 10px;font-size:0.75rem;font-weight:700;color:{cfg['color']};margin-bottom:15px;font-family:var(--font-body);">
-{cfg['icon']}  {t(row['Sentiment'].upper(), cfg['ar'])}
+<div style="display:inline-flex;align-items:center;gap:6px;background:{{cfg['bg']}};border:1px solid {{cfg['border']}};border-radius:6px;padding:4px 10px;font-size:0.75rem;font-weight:700;color:{{cfg['color']}};margin-bottom:15px;font-family:var(--font-body);">
+{{cfg['icon']}}  {{t(row['Sentiment'].upper(), cfg['ar'])}}
 </div>
 <br>
-<a href="{yt_link}" target="_blank" class="highlight-link" style="text-decoration:none; display:inline-block; margin-bottom:5px;">
+<a href="{{yt_link}}" target="_blank" class="highlight-link" style="text-decoration:none; display:inline-block; margin-bottom:5px;">
 <div style="font-family:'Bebas Neue',sans-serif;font-size:2.8rem;letter-spacing:2px;line-height:1;color:var(--text-1);display:flex;align-items:center;gap:12px;transition:all 0.2s ease;">
-<span style="direction:ltr; display:inline-block;">{row['Timestamp']}</span>
-<span style="background:rgba(128,0,32,0.08);color:var(--cherry);font-family:var(--font-body);font-size:0.8rem;padding:4px 12px;border-radius:8px;font-weight:700;letter-spacing:0.5px;display:flex;align-items:center;">⧉ {t("OPEN YOUTUBE", "فتح يوتيوب")}</span>
+<span style="direction:ltr; display:inline-block;">{{row['Timestamp']}}</span>
+<span style="background:rgba(128,0,32,0.08);color:var(--cherry);font-family:var(--font-body);font-size:0.8rem;padding:4px 12px;border-radius:8px;font-weight:700;letter-spacing:0.5px;display:flex;align-items:center;">⧉ {{t("OPEN YOUTUBE", "فتح يوتيوب")}}</span>
 </div>
 </a>
 </div>
 """, unsafe_allow_html=True)
 
-                if st.button(t("▶ PLAY IN-APP", "▶ تشغيل الفيديو"), key=f"play_{v_id}_{row['Seconds']}_{i}", use_container_width=True):
-                    st.session_state[f"start_{v_id}"] = int(row['Seconds'])
+                if st.button(t("▶ PLAY IN-APP", "▶ تشغيل الفيديو"), key=f"play_{{v_id}}_{{row['Seconds']}}_{{i}}", use_container_width=True):
+                    st.session_state[f"start_{{v_id}}"] = int(row['Seconds'])
                     st.rerun()
 
                 st.markdown(f"""
 <div class="golden-card" style="border-top:none; border-top-left-radius:0; border-top-right-radius:0; padding:10px 20px 20px;">
 <div style="font-family:var(--font-body);font-weight:600;font-size:0.65rem;color:var(--text-3);margin-bottom:20px;margin-top:5px;">
-{int(row['Diversity'])} {t("emotions", "مشاعر")} · {int(row['Count'])} {t("comments", "تعليق")}
+{{int(row['Diversity'])}} {{t("emotions", "مشاعر")}} · {{int(row['Count'])}} {{t("comments", "تعليق")}}
 </div>
 <div style="width:100%;height:4px;background:rgba(128,0,32,0.06);border-radius:2px;margin-bottom:10px;">
-<div style="width:{pct}%;height:100%;background:linear-gradient(90deg,{cfg['color']},{meta['border_top']});border-radius:2px;"></div>
+<div style="width:{{pct}}%;height:100%;background:linear-gradient(90deg,{{cfg['color']}},{{meta['border_top']}});border-radius:2px;"></div>
 </div>
 <div style="display:flex;justify-content:space-between;align-items:center;">
-<span style="font-family:var(--font-body);font-weight:700;font-size:0.6rem;color:var(--text-3);">{t("SCORE", "التقييم")}</span>
-<span class="gradient-text" style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;">{pct}</span>
+<span style="font-family:var(--font-body);font-weight:700;font-size:0.6rem;color:var(--text-3);">{{t("SCORE", "التقييم")}}</span>
+<span class="gradient-text" style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;">{{pct}}</span>
 </div>
 </div>
 """, unsafe_allow_html=True)
 
-    header_text = f"{t('ENGAGEMENT HEATMAP', 'الخريطة الحرارية')} ({t(emotion_filter.upper(), EMOTION_CONFIG.get(emotion_filter, FALLBACK_CFG)['ar'])})" if emotion_filter != "All Emotions" else t("ENGAGEMENT HEATMAP", "الخريطة الحرارية للتفاعل")
+    header_text = f"{{t('ENGAGEMENT HEATMAP', 'الخريطة الحرارية')}} ({{t(emotion_filter.upper(), EMOTION_CONFIG.get(emotion_filter, FALLBACK_CFG)['ar'])}})" if emotion_filter != "All Emotions" else t("ENGAGEMENT HEATMAP", "الخريطة الحرارية للتفاعل")
     section_header("📊", header_text)
 
     if not df_f.empty:
@@ -732,15 +738,15 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str):
 
         if st.session_state.is_arabic:
             df_plot['Sentiment'] = df_plot['Sentiment'].map(lambda x: EMOTION_CONFIG.get(x, FALLBACK_CFG)['ar'])
-            color_map = {EMOTION_CONFIG[k]['ar']: EMOTION_CONFIG[k]['color'] for k in EMOTION_CONFIG}
+            color_map = {{EMOTION_CONFIG[k]['ar']: EMOTION_CONFIG[k]['color'] for k in EMOTION_CONFIG}}
         else:
-            color_map = {k: v["color"] for k, v in EMOTION_CONFIG.items()}
+            color_map = {{k: v["color"] for k, v in EMOTION_CONFIG.items()}}
 
         fig = px.histogram(
             df_plot, x="Minutes", color="Sentiment", nbins=100,
             template="plotly_dark" if st.session_state.dark_mode else "plotly_white", height=300,
             color_discrete_map=color_map,
-            labels={"Minutes": t("Timeline (Mins)", "الوقت (دقيقة)"), "count": t("Mentions", "التكرار")}
+            labels={{"Minutes": t("Timeline (Mins)", "الوقت (دقيقة)"), "count": t("Mentions", "التكرار")}}
         )
         grid_color = "rgba(255,255,255,0.05)" if st.session_state.dark_mode else "rgba(128,0,32,0.05)"
         font_color = "#E0E0E0" if st.session_state.dark_mode else "#555555"
@@ -752,7 +758,7 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str):
             yaxis=dict(gridcolor=grid_color, zeroline=False),
             bargap=0.05, margin=dict(l=0, r=0, t=30, b=0),
         )
-        st.plotly_chart(fig, use_container_width=True, key=f"hist_{v_id}")
+        st.plotly_chart(fig, use_container_width=True, key=f"hist_{{v_id}}")
 
     if emotion_filter == "All Emotions":
         st.markdown("<br>", unsafe_allow_html=True)
@@ -764,9 +770,9 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str):
 
             if st.session_state.is_arabic:
                 em_counts['Sentiment'] = em_counts['Sentiment'].map(lambda x: EMOTION_CONFIG.get(x, FALLBACK_CFG)['ar'])
-                color_map = {EMOTION_CONFIG[k]['ar']: EMOTION_CONFIG[k]['color'] for k in EMOTION_CONFIG}
+                color_map = {{EMOTION_CONFIG[k]['ar']: EMOTION_CONFIG[k]['color'] for k in EMOTION_CONFIG}}
             else:
-                color_map = {k: v["color"] for k, v in EMOTION_CONFIG.items()}
+                color_map = {{k: v["color"] for k, v in EMOTION_CONFIG.items()}}
 
             fig2 = px.bar(
                 em_counts, x='Sentiment', y='Count', color='Sentiment',
@@ -778,10 +784,10 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str):
                 font=dict(family="JetBrains Mono" if not st.session_state.is_arabic else "Cairo", color=font_color, size=11),
                 margin=dict(l=0, r=0, t=10, b=0),
             )
-            st.plotly_chart(fig2, use_container_width=True, key=f"bar_{v_id}")
+            st.plotly_chart(fig2, use_container_width=True, key=f"bar_{{v_id}}")
 
         with tab2:
-            st.markdown(f"<div style='text-align:center; font-size:0.75rem; color:var(--text-3); font-weight:600; margin-bottom:5px; font-family:var(--font-body);'>{t('Top Keywords', 'أبرز الكلمات المتكررة')}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='text-align:center; font-size:0.75rem; color:var(--text-3); font-weight:600; margin-bottom:5px; font-family:var(--font-body);'>{{t('Top Keywords', 'أبرز الكلمات المتكررة')}}</div>", unsafe_allow_html=True)
             text_data = " ".join(df_work_cached['Content'].tolist())
             arabic_stopwords = set(["في", "من", "على", "الى", "إلى", "و", "يا", "لا", "ما", "اللي", "كان", "بس", "تبع", "هاد", "هذا", "ان", "انا", "هو", "هي"])
             english_junk = set(["u", "ur", "video", "youtube", "bro", "im", "will", "one", "like", "subscribe"])
@@ -803,10 +809,10 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str):
         st.markdown(f"""
         <div class="golden-card" style="margin-top:20px;padding:20px;background:rgba(128,0,32,0.04);border-left:4px solid var(--cherry);border-right:none;">
             <div style="font-family:var(--font-body);font-size:1.1rem;font-weight:700;color:var(--text-1);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
-                🤖 {t("AI RECOMMENDATION", "توصية الذكاء الاصطناعي")}
+                🤖 {{t("AI RECOMMENDATION", "توصية الذكاء الاصطناعي")}}
             </div>
             <p style="font-family:var(--font-body);font-size:0.9rem;font-weight:600;color:var(--text-2);margin:0;line-height:1.6;">
-                {rec_text}
+                {{rec_text}}
             </p>
         </div>
         """, unsafe_allow_html=True)
