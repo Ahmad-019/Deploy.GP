@@ -48,6 +48,7 @@ if "is_arabic" not in st.session_state:
     st.session_state.is_arabic = False
 
 def t(en_text: str, ar_text: str) -> str:
+    """Returns Arabic text if Arabic UI is toggled, else English"""
     return ar_text if st.session_state.is_arabic else en_text
 
 # ═══════════════════════════════════════════════════════════
@@ -81,7 +82,7 @@ with st.sidebar:
     st.markdown("<hr style='margin:10px 0; border-color:var(--border);'>", unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════
-#  DESIGN SYSTEM — DYNAMIC THEME ENGINE
+#  DESIGN SYSTEM — DYNAMIC THEME ENGINE & ANIMATIONS
 # ═══════════════════════════════════════════════════════════
 if st.session_state.dark_mode:
     theme_vars = """
@@ -133,37 +134,6 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stAppViewContainer
     direction: {direction_css};
 }}
 
-/* ═══════════════════════════════════════════════════════════
-   ARABIC RTL FIX — SIDEBAR ALWAYS STAYS ON THE LEFT
-   ═══════════════════════════════════════════════════════════ */
-[data-testid="stSidebar"] {{
-    direction: ltr !important;
-    left: 0 !important;
-    right: auto !important;
-    position: fixed !important;
-}}
-[data-testid="stSidebar"] * {{
-    direction: ltr !important;
-    text-align: left !important;
-}}
-[data-testid="stSidebarContent"] {{
-    direction: ltr !important;
-}}
-section[data-testid="stSidebar"] {{
-    left: 0 !important;
-    right: auto !important;
-}}
-[data-testid="collapsedControl"] {{
-    left: 0 !important;
-    right: auto !important;
-    direction: ltr !important;
-}}
-/* Force main content to always be on the right of sidebar */
-.main .block-container {{
-    direction: {direction_css} !important;
-}}
-/* ═══════════════════════════════════════════════════════════ */
-
 .golden-card {{
     background: var(--surface-2);
     border: 1px solid var(--border);
@@ -196,22 +166,23 @@ section[data-testid="stSidebar"] {{
 #MainMenu, footer {{ visibility: hidden; }}
 header {{ background-color: transparent !important; }}
 
-[data-testid="stSidebar"] {{
-    background: var(--surface-1) !important;
-    border-right: 1px solid var(--border) !important;
+[data-testid="stSidebar"] {{ 
+    background: var(--surface-1) !important; 
+    border-right: 1px solid var(--border) !important; 
 }}
 [data-testid="stSidebar"] > div {{ padding-top: 0 !important; }}
 
+/* 💡 الحماية الصارمة لأزرار الراديو لمنع كسر السطر نهائياً */
 div[role="radiogroup"] label {{ white-space: nowrap !important; }}
-div[role="radiogroup"] p {{
-    font-family: var(--font-body) !important;
-    font-size: 0.75rem !important;
-    color: var(--text-1) !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    margin: 0 !important;
-    padding: 2px 0 !important;
+div[role="radiogroup"] p {{ 
+    font-family: var(--font-body) !important; 
+    font-size: 0.75rem !important; 
+    color: var(--text-1) !important; 
+    white-space: nowrap !important; 
+    overflow: hidden !important; 
+    text-overflow: ellipsis !important; 
+    margin: 0 !important; 
+    padding: 2px 0 !important; 
 }}
 
 [data-testid="stSidebar"] .stTextInput label {{ color: var(--text-1) !important; font-size: 0.65rem !important; font-weight: 600 !important; letter-spacing: 1px !important; text-transform: uppercase !important; font-family: var(--font-body) !important; }}
@@ -220,34 +191,34 @@ div[role="radiogroup"] p {{
 [data-testid="stSidebar"] .stTextInput input::placeholder {{ color: var(--text-3) !important; font-size: 0.75rem !important; }}
 .stProgress > div > div > div > div {{ background: linear-gradient(90deg, var(--cherry), var(--cherry-lt)) !important; border-radius: 4px !important; }}
 
-div[data-testid="metric-container"] {{
-    background: var(--surface-2) !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 12px !important;
-    padding: 20px 10px !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.02) !important;
+div[data-testid="metric-container"] {{ 
+    background: var(--surface-2) !important; 
+    border: 1px solid var(--border) !important; 
+    border-radius: 12px !important; 
+    padding: 20px 10px !important; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02) !important; 
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
     text-align: center !important;
 }}
-[data-testid="stMetricValue"] {{
-    font-family: var(--font-display) !important;
-    font-size: 2.2rem !important;
-    letter-spacing: 1px !important;
-    color: var(--cherry) !important;
+[data-testid="stMetricValue"] {{ 
+    font-family: var(--font-display) !important; 
+    font-size: 2.2rem !important; 
+    letter-spacing: 1px !important; 
+    color: var(--cherry) !important; 
     width: 100% !important;
     text-align: center !important;
     display: flex !important;
     justify-content: center !important;
 }}
-[data-testid="stMetricLabel"] {{
-    font-family: var(--font-body) !important;
-    font-size: 0.75rem !important;
-    letter-spacing: 0.5px !important;
-    font-weight:600 !important;
-    color: var(--text-3) !important;
+[data-testid="stMetricLabel"] {{ 
+    font-family: var(--font-body) !important; 
+    font-size: 0.75rem !important; 
+    letter-spacing: 0.5px !important; 
+    font-weight:600 !important; 
+    color: var(--text-3) !important; 
     width: 100% !important;
     text-align: center !important;
     display: flex !important;
@@ -270,6 +241,8 @@ hr {{ border-color: var(--border) !important; }}
 
 @media (max-width: 768px) {{
     [data-testid="block-container"] {{ padding: 0 1rem 3rem !important; }}
+    [data-testid="block-container"] div[style*="padding:64px"] {{ padding: 32px 0 28px !important; }}
+    [data-testid="block-container"] div[style*="Bebas Neue"] {{ font-size: clamp(2rem, 10vw, 3.5rem) !important; letter-spacing: 1px !important; }}
     div[data-testid="metric-container"] {{ padding: 14px 10px !important; }}
     [data-testid="stMetricValue"] {{ font-size: 1.6rem !important; }}
     [data-testid="stMetricLabel"] {{ font-size: 0.55rem !important; }}
@@ -279,6 +252,7 @@ hr {{ border-color: var(--border) !important; }}
     div[style*="padding:80px 40px"] {{ padding: 40px 20px !important; }}
     .stPlotlyChart, .stPyplot {{ width: 100% !important; }}
     [data-testid="stTabs"] {{ overflow-x: auto !important; }}
+    div[style*="padding:24px"][style*="border-left:4px solid"] {{ padding: 16px !important; }}
     iframe {{ width: 100% !important; height: auto !important; aspect-ratio: 16/9 !important; }}
     [data-testid="column"] {{ width: 100% !important; flex: 1 1 100% !important; }}
 }}
@@ -344,9 +318,11 @@ def fetch_comments_refined(video_id: str, max_results: int):
             next_page_token = response.get('nextPageToken')
             n = len(comments)
             progress_bar.progress(min(n / max_results, 1.0))
+            
             if n < 5000: msg = t(f"⚡ Fast Sampling... {n:,} captured", f"⚡ جمع سريع... {n:,} تعليق")
             elif n < 15000: msg = t(f"📥 Standard Sampling... {n:,} captured", f"📥 جمع قياسي... {n:,} تعليق")
             else: msg = t(f"🕵️‍♂️ Deep Analysis... {n:,} captured", f"🕵️‍♂️ فحص عميق... {n:,} تعليق")
+            
             status_text.markdown(f"<p style='color:var(--text-3);font-size:0.8rem;font-family:var(--font-body);'>{msg}</p>", unsafe_allow_html=True)
             if not next_page_token: break
         except Exception as e:
@@ -381,16 +357,25 @@ def classify_sentiment_logic(text: str):
 
 def batch_classify_hybrid_engine(df: pd.DataFrame) -> pd.DataFrame:
     if df.empty: return df
+    
     df['Sentiment'] = df['Content'].apply(classify_sentiment_logic)
     neutral_mask = df['Sentiment'] == "Neutral"
     df_neutral = df[neutral_mask].copy()
-    if df_neutral.empty: return df
+    
+    if df_neutral.empty:
+        return df
 
     arabic_pattern = re.compile(r'[\u0600-\u06FF]')
     has_arabic = any(arabic_pattern.search(str(text)) for text in df['Content'])
+
     emotion_map = {
-        'joy': 'Happy', 'sadness': 'Sad', 'anger': 'Controversial',
-        'disgust': 'Controversial', 'fear': 'Sad', 'surprise': 'Inspirational', 'neutral': 'Neutral'
+        'joy': 'Happy',
+        'sadness': 'Sad',
+        'anger': 'Controversial',
+        'disgust': 'Controversial',
+        'fear': 'Sad',
+        'surprise': 'Inspirational',
+        'neutral': 'Neutral'
     }
 
     if not has_arabic:
@@ -403,8 +388,10 @@ def batch_classify_hybrid_engine(df: pd.DataFrame) -> pd.DataFrame:
     else:
         df_neutral['len'] = df_neutral['Content'].astype(str).str.len()
         df_neutral = df_neutral.sort_values(by='len', ascending=False)
+        
         sample_size = min(400, len(df_neutral))
         df_sample = df_neutral.head(sample_size)
+        
         for idx, row in df_sample.iterrows():
             text = str(row['Content'])
             try:
@@ -412,11 +399,14 @@ def batch_classify_hybrid_engine(df: pd.DataFrame) -> pd.DataFrame:
                     processed_text = GoogleTranslator(source='auto', target='en').translate(text[:250])
                 else:
                     processed_text = text
+                    
                 res = emotion_engine(processed_text[:512])[0]
                 df.at[idx, 'Sentiment'] = emotion_map.get(res['label'], "Neutral")
             except:
                 df.at[idx, 'Sentiment'] = "Neutral"
+                
         df.loc[df['Sentiment'] == "Neutral", 'Sentiment'] = "Neutral"
+                
     return df
 
 EMOTION_HEAT   = {"Funny": 1.4, "Controversial": 1.5, "Inspirational": 1.3, "Happy": 1.0, "Sad": 0.9}
@@ -494,6 +484,7 @@ with st.sidebar:
 </div>
 """, unsafe_allow_html=True)
 
+    # 💡 حل ذكي للترجمة: الراديو بيحتفظ بالقيمة الأصلية للوجيك، بس بيعرضها مترجمة!
     depth_mapping = {
         5000: t("🚀 Quick Sample (5k Comments)", "🚀 عينة سريعة (5k تعليق)"),
         15000: t("⚖️ Standard Mode (15k Comments)", "⚖️ الوضع القياسي (15k تعليق)"),
@@ -509,11 +500,12 @@ with st.sidebar:
 </div>
 """, unsafe_allow_html=True)
 
+    # 💡 حل ذكي لترجمة المشاعر: اللوجيك بضل إنجليزي والواجهة بتصير عربي
     em_opts = ["All Emotions", "Funny", "Happy", "Sad", "Controversial", "Inspirational"]
     def format_emotion(em):
         if not st.session_state.is_arabic: return em
         return {"All Emotions": "جميع المشاعر", "Funny": "مضحك", "Happy": "سعيد", "Sad": "حزين", "Controversial": "جدلي", "Inspirational": "ملهم"}.get(em, em)
-
+    
     selected_filter = st.radio("Filter", options=em_opts, format_func=format_emotion, label_visibility="collapsed", index=0)
 
     st.markdown(f"""
@@ -525,9 +517,9 @@ with st.sidebar:
 """, unsafe_allow_html=True)
 
     stack_items = [
-        ("NLP", t("Hybrid Sentiment", "تحليل مشاعر هجين")),
-        ("ETL", t("Dynamic Sampling API", "جمع بيانات ديناميكي")),
-        ("ALGO", t("Composite score ranking", "خوارزمية تقييم مركبة")),
+        ("NLP", t("Hybrid Sentiment", "تحليل مشاعر هجين")), 
+        ("ETL", t("Dynamic Sampling API", "جمع بيانات ديناميكي")), 
+        ("ALGO", t("Composite score ranking", "خوارزمية تقييم مركبة")), 
         ("HEAT", t("Emotion intensity weights", "أوزان حرارة المشاعر"))
     ]
     for tag, label in stack_items:
@@ -559,7 +551,7 @@ st.markdown(f"""
 <span class="gradient-text">{t("GOLDEN MOMENTS", "اللحظات الذهبية")}</span>
 </div>
 <p style="font-family:var(--font-body);font-size:1rem;font-weight:400;color:var(--text-2);max-width:560px;line-height:1.75;margin:0;">
-{t("AI-powered crowd behaviour analytics. Surface emotional peaks, engagement spikes & highlight-worthy timestamps from tens of thousands of audience comments.",
+{t("AI-powered crowd behaviour analytics. Surface emotional peaks, engagement spikes & highlight-worthy timestamps from tens of thousands of audience comments.", 
 "تحليل سلوك الجماهير بالذكاء الاصطناعي. استخرج ذروة التفاعل والمشاعر من آلاف التعليقات بكل سهولة وسرعة.")}
 </p>
 </div>
@@ -592,6 +584,7 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str):
         return
 
     v_id = vid_match.group(1)
+
     state_key_df = f"df_{v_id}"
     state_key_depth = f"depth_{v_id}"
     state_key_raw_len = f"raw_len_{v_id}"
@@ -610,11 +603,14 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str):
             st.session_state[state_key_raw_len] = len(raw)
             df_parsed = process_intelligence(raw)
             st.session_state[state_key_parsed_len] = len(df_parsed)
+            
             st.write(t("🧠 Processing Multilingual Sentiments...", "🧠 جاري تحليل المشاعر بالذكاء الاصطناعي..."))
             df_work = df_parsed.copy()
             df_work = batch_classify_hybrid_engine(df_work)
+            
             st.session_state[state_key_df] = df_work
             st.session_state[state_key_depth] = depth
+            
             status.update(label=t("✦ Analysis Complete", "✦ اكتمل التحليل"), state="complete", expanded=False)
 
     df_work_cached = st.session_state[state_key_df].copy()
@@ -639,7 +635,7 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str):
         st.info(t("No emotive peaks detected for your selection.", "لم يتم العثور على ذروات عاطفية لهذا الاختيار."))
     else:
         highlights = compute_smart_highlights(df_f, top_n=3)
-
+        
         with col_hdr_2:
             st.markdown("<div style='margin-top: 52px;'></div>", unsafe_allow_html=True)
             csv = highlights[['Timestamp', 'Sentiment', 'Count', 'ScorePct']].to_csv(index=False).encode('utf-8')
@@ -655,7 +651,7 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str):
 
         num_cols = 3
         cols = st.columns(num_cols)
-
+        
         for i, row in highlights.iterrows():
             if i >= num_cols: break
             cfg  = EMOTION_CONFIG.get(row['Sentiment'], FALLBACK_CFG)
@@ -710,7 +706,7 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str):
         df_f['Minutes'] = df_f['Seconds'] / 60.0
         max_valid_minute = df_f['Minutes'].quantile(0.995)
         df_plot = df_f[df_f['Minutes'] <= max_valid_minute].copy()
-
+        
         if st.session_state.is_arabic:
             df_plot['Sentiment'] = df_plot['Sentiment'].map(lambda x: EMOTION_CONFIG.get(x, FALLBACK_CFG)['ar'])
             color_map = {EMOTION_CONFIG[k]['ar']: EMOTION_CONFIG[k]['color'] for k in EMOTION_CONFIG}
@@ -742,7 +738,7 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str):
         with tab1:
             em_counts = df_work_cached[df_work_cached['Sentiment'] != "Neutral"]['Sentiment'].value_counts().reset_index()
             em_counts.columns = ['Sentiment', 'Count']
-
+            
             if st.session_state.is_arabic:
                 em_counts['Sentiment'] = em_counts['Sentiment'].map(lambda x: EMOTION_CONFIG.get(x, FALLBACK_CFG)['ar'])
                 color_map = {EMOTION_CONFIG[k]['ar']: EMOTION_CONFIG[k]['color'] for k in EMOTION_CONFIG}
@@ -770,6 +766,7 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str):
             if ARABIC_SUPPORT:
                 text_data = arabic_reshaper.reshape(text_data)
                 text_data = get_display(text_data)
+            
             bg_color = 'black' if st.session_state.dark_mode else 'white'
             wc = WordCloud(width=600, height=300, background_color=bg_color, stopwords=final_stopwords, colormap='inferno').generate(text_data)
             fig_wc, ax = plt.subplots(figsize=(8, 4))
@@ -808,4 +805,4 @@ if not target_url.strip():
 </div>
 """, unsafe_allow_html=True)
 else:
-    render_video_analysis(target_url, target_max_results, selected_filter)
+    render_video_analysis(target_url, target_max_results, selected_filte
