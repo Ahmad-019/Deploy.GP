@@ -127,10 +127,12 @@ st.markdown(f"""
   --font-mono:    'JetBrains Mono', monospace;
 }}
 *, *::before, *::after {{ box-sizing: border-box; }}
-
-/* 💡 إيقاف الـ RTL عن كامل الصفحة لكي لا ينهار الـ Sidebar، وتطبيقه فقط على مساحة العرض الرئيسية */
-[data-testid="stAppViewContainer"] {{ background-color: var(--surface-0) !important; color: var(--text-1) !important; font-family: var(--font-body) !important; }}
-[data-testid="block-container"] {{ direction: {direction_css}; padding: 0 3rem 5rem !important; max-width: 1400px; }}
+html, body, [data-testid="stAppViewContainer"], [data-testid="stAppViewContainer"] > .main {{
+    background-color: var(--surface-0) !important;
+    color: var(--text-1) !important;
+    font-family: var(--font-body) !important;
+    direction: {direction_css};
+}}
 
 .golden-card {{
     background: var(--surface-2);
@@ -145,7 +147,9 @@ st.markdown(f"""
     box-shadow: 0 15px 35px rgba(128,0,32,0.1) !important;
     border-color: var(--border-hi);
 }}
-.pulse-ring {{ animation: pulse-ring 2.5s infinite; }}
+.pulse-ring {{
+    animation: pulse-ring 2.5s infinite;
+}}
 @keyframes pulse-ring {{
     0%   {{ box-shadow: 0 0 0 0 rgba(128, 0, 32, 0.3); }}
     70%  {{ box-shadow: 0 0 0 8px rgba(128, 0, 32, 0); }}
@@ -158,16 +162,27 @@ st.markdown(f"""
     background-clip: text;
 }}
 
+[data-testid="block-container"] {{ padding: 0 3rem 5rem !important; max-width: 1400px; }}
 #MainMenu, footer {{ visibility: hidden; }}
 header {{ background-color: transparent !important; }}
 
-/* 💡 حل السايد بار النهائي: إبقاؤه LTR برمجياً لمنع التداخل وحل مشكلة زر الإغلاق، وتوجيه النصوص داخله حسب اللغة */
-[data-testid="stSidebar"] {{ background: var(--surface-1) !important; border-right: 1px solid var(--border) !important; direction: ltr !important; }}
+[data-testid="stSidebar"] {{ 
+    background: var(--surface-1) !important; 
+    border-right: 1px solid var(--border) !important; 
+}}
 [data-testid="stSidebar"] > div {{ padding-top: 0 !important; }}
-[data-testid="stSidebar"] p, [data-testid="stSidebar"] span, [data-testid="stSidebar"] label, [data-testid="stSidebar"] div {{
-    direction: {direction_css} !important;
-    text-align: {"right" if st.session_state.is_arabic else "left"} !important;
-    white-space: normal !important; /* يمنع ظهور الحروف بشكل عمودي */
+
+/* 💡 الحماية الصارمة لأزرار الراديو لمنع كسر السطر نهائياً */
+div[role="radiogroup"] label {{ white-space: nowrap !important; }}
+div[role="radiogroup"] p {{ 
+    font-family: var(--font-body) !important; 
+    font-size: 0.75rem !important; 
+    color: var(--text-1) !important; 
+    white-space: nowrap !important; 
+    overflow: hidden !important; 
+    text-overflow: ellipsis !important; 
+    margin: 0 !important; 
+    padding: 2px 0 !important; 
 }}
 
 [data-testid="stSidebar"] .stTextInput label {{ color: var(--text-1) !important; font-size: 0.65rem !important; font-weight: 600 !important; letter-spacing: 1px !important; text-transform: uppercase !important; font-family: var(--font-body) !important; }}
@@ -176,7 +191,6 @@ header {{ background-color: transparent !important; }}
 [data-testid="stSidebar"] .stTextInput input::placeholder {{ color: var(--text-3) !important; font-size: 0.75rem !important; }}
 .stProgress > div > div > div > div {{ background: linear-gradient(90deg, var(--cherry), var(--cherry-lt)) !important; border-radius: 4px !important; }}
 
-/* 💡 حل وتوسيط الـ KPIs (المؤشرات) بشكل مثالي */
 div[data-testid="metric-container"] {{ 
     background: var(--surface-2) !important; 
     border: 1px solid var(--border) !important; 
@@ -433,7 +447,7 @@ def compute_smart_highlights(df: pd.DataFrame, top_n: int = 3) -> pd.DataFrame:
     return result
 
 # ═══════════════════════════════════════════════════════════
-#  SIDEBAR ELEMENTS (Comparison Mode Removed)
+#  SIDEBAR ELEMENTS
 # ═══════════════════════════════════════════════════════════
 with st.sidebar:
     st.markdown(f"""
@@ -470,13 +484,13 @@ with st.sidebar:
 </div>
 """, unsafe_allow_html=True)
 
-    depth_options = {
-        t("🚀 Quick Sample (5k Comments)", "🚀 عينة سريعة (5k تعليق)"): 5000, 
-        t("⚖️ Standard Mode (15k Comments)", "⚖️ الوضع القياسي (15k تعليق)"): 15000, 
-        t("🕵️‍♂️ Deep Scan (50k Comments)", "🕵️‍♂️ فحص عميق (50k تعليق)"): 50000
+    # 💡 حل ذكي للترجمة: الراديو بيحتفظ بالقيمة الأصلية للوجيك، بس بيعرضها مترجمة!
+    depth_mapping = {
+        5000: t("🚀 Quick Sample (5k Comments)", "🚀 عينة سريعة (5k تعليق)"),
+        15000: t("⚖️ Standard Mode (15k Comments)", "⚖️ الوضع القياسي (15k تعليق)"),
+        50000: t("🕵️‍♂️ Deep Scan (50k Comments)", "🕵️‍♂️ فحص عميق (50k تعليق)")
     }
-    selected_depth_label = st.radio("Depth", options=list(depth_options.keys()), label_visibility="collapsed", index=0)
-    target_max_results = depth_options[selected_depth_label]
+    target_max_results = st.radio("Depth", options=[5000, 15000, 50000], format_func=lambda x: depth_mapping[x], label_visibility="collapsed", index=0)
 
     st.markdown(f"""
 <div style="margin-top:20px;padding:0 4px 6px;">
@@ -486,9 +500,13 @@ with st.sidebar:
 </div>
 """, unsafe_allow_html=True)
 
-    em_opts = [t("All Emotions", "جميع المشاعر"), "Funny", "Happy", "Sad", "Controversial", "Inspirational"]
-    selected_filter_label = st.radio("Filter", options=em_opts, label_visibility="collapsed", index=0)
-    selected_filter = "All Emotions" if selected_filter_label in ["All Emotions", "جميع المشاعر"] else selected_filter_label
+    # 💡 حل ذكي لترجمة المشاعر: اللوجيك بضل إنجليزي والواجهة بتصير عربي
+    em_opts = ["All Emotions", "Funny", "Happy", "Sad", "Controversial", "Inspirational"]
+    def format_emotion(em):
+        if not st.session_state.is_arabic: return em
+        return {"All Emotions": "جميع المشاعر", "Funny": "مضحك", "Happy": "سعيد", "Sad": "حزين", "Controversial": "جدلي", "Inspirational": "ملهم"}.get(em, em)
+    
+    selected_filter = st.radio("Filter", options=em_opts, format_func=format_emotion, label_visibility="collapsed", index=0)
 
     st.markdown(f"""
 <div style="margin-top:28px;padding:0 4px 12px;">
@@ -557,7 +575,7 @@ def section_header(icon: str, title: str, subtitle: str = ""):
 """, unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════
-#  DASHBOARD RENDER FUNCTION (Single Video Focus)
+#  DASHBOARD RENDER FUNCTION
 # ═══════════════════════════════════════════════════════════
 def render_video_analysis(url: str, depth: int, emotion_filter: str):
     vid_match = re.search(r"(?:v=|\/|embed\/|shorts\/)([0-9A-Za-z_-]{11})", url)
@@ -603,7 +621,6 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str):
     if emotion_filter != "All Emotions":
         df_f = df_f[df_f['Sentiment'] == emotion_filter].copy()
 
-    # Metrics Layout (Forced centering applied in CSS above)
     c1, c2, c3, c4 = st.columns(4)
     c1.metric(t("Comments Sampled", "تعليقات مسحوبة"), f"{raw_len:,}")
     c2.metric(t("Timestamped", "مرتبطة بوقت"),      f"{parsed_len:,}")
