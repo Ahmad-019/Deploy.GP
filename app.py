@@ -127,12 +127,10 @@ st.markdown(f"""
   --font-mono:    'JetBrains Mono', monospace;
 }}
 *, *::before, *::after {{ box-sizing: border-box; }}
-html, body, [data-testid="stAppViewContainer"], [data-testid="stAppViewContainer"] > .main {{
-    background-color: var(--surface-0) !important;
-    color: var(--text-1) !important;
-    font-family: var(--font-body) !important;
-    direction: {direction_css};
-}}
+
+/* 💡 إيقاف الـ RTL عن كامل الصفحة لكي لا ينهار الـ Sidebar، وتطبيقه فقط على مساحة العرض الرئيسية */
+[data-testid="stAppViewContainer"] {{ background-color: var(--surface-0) !important; color: var(--text-1) !important; font-family: var(--font-body) !important; }}
+[data-testid="block-container"] {{ direction: {direction_css}; padding: 0 3rem 5rem !important; max-width: 1400px; }}
 
 .golden-card {{
     background: var(--surface-2);
@@ -147,9 +145,7 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stAppViewContainer
     box-shadow: 0 15px 35px rgba(128,0,32,0.1) !important;
     border-color: var(--border-hi);
 }}
-.pulse-ring {{
-    animation: pulse-ring 2.5s infinite;
-}}
+.pulse-ring {{ animation: pulse-ring 2.5s infinite; }}
 @keyframes pulse-ring {{
     0%   {{ box-shadow: 0 0 0 0 rgba(128, 0, 32, 0.3); }}
     70%  {{ box-shadow: 0 0 0 8px rgba(128, 0, 32, 0); }}
@@ -162,38 +158,31 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stAppViewContainer
     background-clip: text;
 }}
 
-[data-testid="block-container"] {{ padding: 0 3rem 5rem !important; max-width: 1400px; }}
 #MainMenu, footer {{ visibility: hidden; }}
 header {{ background-color: transparent !important; }}
 
-/* 💡 إصلاح السايد بار ليبقى LTR دائمًا لمنع تداخل العناصر في الموبايل */
-[data-testid="stSidebar"] {{ 
-    background: var(--surface-1) !important; 
-    border-right: 1px solid var(--border) !important; 
-    direction: ltr !important; 
-}}
-[data-testid="stSidebar"] * {{
-    direction: ltr !important;
-    text-align: left !important;
-}}
+/* 💡 حل السايد بار النهائي: إبقاؤه LTR برمجياً لمنع التداخل وحل مشكلة زر الإغلاق، وتوجيه النصوص داخله حسب اللغة */
+[data-testid="stSidebar"] {{ background: var(--surface-1) !important; border-right: 1px solid var(--border) !important; direction: ltr !important; }}
 [data-testid="stSidebar"] > div {{ padding-top: 0 !important; }}
-
-div[role="radiogroup"] label {{ white-space: nowrap !important; }}
-div[role="radiogroup"] p {{ font-family: var(--font-body) !important; font-size: 0.75rem !important; color: var(--text-1) !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; margin: 0 !important; padding: 2px 0 !important; }}
+[data-testid="stSidebar"] p, [data-testid="stSidebar"] span, [data-testid="stSidebar"] label, [data-testid="stSidebar"] div {{
+    direction: {direction_css} !important;
+    text-align: {"right" if st.session_state.is_arabic else "left"} !important;
+    white-space: normal !important; /* يمنع ظهور الحروف بشكل عمودي */
+}}
 
 [data-testid="stSidebar"] .stTextInput label {{ color: var(--text-1) !important; font-size: 0.65rem !important; font-weight: 600 !important; letter-spacing: 1px !important; text-transform: uppercase !important; font-family: var(--font-body) !important; }}
-[data-testid="stSidebar"] .stTextInput input {{ background: var(--surface-2) !important; border: 1px solid var(--border) !important; border-radius: 8px !important; color: var(--text-1) !important; font-family: var(--font-mono) !important; font-size: 0.78rem !important; transition: border-color 0.2s !important; padding: 10px 14px !important; direction: ltr; }}
+[data-testid="stSidebar"] .stTextInput input {{ background: var(--surface-2) !important; border: 1px solid var(--border) !important; border-radius: 8px !important; color: var(--text-1) !important; font-family: var(--font-mono) !important; font-size: 0.78rem !important; transition: border-color 0.2s !important; padding: 10px 14px !important; direction: ltr !important; text-align: left !important; }}
 [data-testid="stSidebar"] .stTextInput input:focus {{ border-color: var(--cherry) !important; box-shadow: 0 0 0 3px rgba(128,0,32,0.12) !important; outline: none !important; }}
 [data-testid="stSidebar"] .stTextInput input::placeholder {{ color: var(--text-3) !important; font-size: 0.75rem !important; }}
 .stProgress > div > div > div > div {{ background: linear-gradient(90deg, var(--cherry), var(--cherry-lt)) !important; border-radius: 4px !important; }}
 
-/* 💡 إصلاح محاذاة وتوسيط الـ KPIs (Metrics) */
+/* 💡 حل وتوسيط الـ KPIs (المؤشرات) بشكل مثالي */
 div[data-testid="metric-container"] {{ 
     background: var(--surface-2) !important; 
     border: 1px solid var(--border) !important; 
     border-radius: 12px !important; 
-    padding: 20px 24px !important; 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.02) !important;
+    padding: 20px 10px !important; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02) !important; 
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -205,7 +194,6 @@ div[data-testid="metric-container"] {{
     font-size: 2.2rem !important; 
     letter-spacing: 1px !important; 
     color: var(--cherry) !important; 
-    direction: ltr !important; 
     width: 100% !important;
     text-align: center !important;
     display: flex !important;
@@ -222,6 +210,11 @@ div[data-testid="metric-container"] {{
     display: flex !important;
     justify-content: center !important;
 }}
+[data-testid="stMetricValue"] > div, [data-testid="stMetricLabel"] > div {{
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important;
+}}
 
 [data-testid="stStatusContainer"] {{ background: var(--surface-2) !important; border: 1px solid var(--border) !important; border-radius: 12px !important; font-family: var(--font-body) !important; font-size: 0.8rem !important; color: var(--text-1) !important; }}
 hr {{ border-color: var(--border) !important; }}
@@ -230,12 +223,13 @@ hr {{ border-color: var(--border) !important; }}
 ::-webkit-scrollbar-track {{ background: var(--surface-0); }}
 ::-webkit-scrollbar-thumb {{ background: var(--surface-3); border-radius: 4px; }}
 .highlight-link:hover {{ opacity: 0.8; }}
+[data-testid="stSidebar"] p, [data-testid="stSidebar"] span, [data-testid="stSidebar"] label, [data-testid="stSidebar"] div, [data-testid="stSidebar"] .stMarkdown p {{ color: var(--sidebar-text) !important; }}
 
 @media (max-width: 768px) {{
     [data-testid="block-container"] {{ padding: 0 1rem 3rem !important; }}
     [data-testid="block-container"] div[style*="padding:64px"] {{ padding: 32px 0 28px !important; }}
     [data-testid="block-container"] div[style*="Bebas Neue"] {{ font-size: clamp(2rem, 10vw, 3.5rem) !important; letter-spacing: 1px !important; }}
-    div[data-testid="metric-container"] {{ padding: 14px 16px !important; }}
+    div[data-testid="metric-container"] {{ padding: 14px 10px !important; }}
     [data-testid="stMetricValue"] {{ font-size: 1.6rem !important; }}
     [data-testid="stMetricLabel"] {{ font-size: 0.55rem !important; }}
     div[style*="font-size:3.8rem"] {{ font-size: 2.2rem !important; letter-spacing: 1px !important; }}
@@ -361,8 +355,13 @@ def batch_classify_hybrid_engine(df: pd.DataFrame) -> pd.DataFrame:
     has_arabic = any(arabic_pattern.search(str(text)) for text in df['Content'])
 
     emotion_map = {
-        'joy': 'Happy', 'sadness': 'Sad', 'anger': 'Controversial',
-        'disgust': 'Controversial', 'fear': 'Sad', 'surprise': 'Inspirational', 'neutral': 'Neutral'
+        'joy': 'Happy',
+        'sadness': 'Sad',
+        'anger': 'Controversial',
+        'disgust': 'Controversial',
+        'fear': 'Sad',
+        'surprise': 'Inspirational',
+        'neutral': 'Neutral'
     }
 
     if not has_arabic:
@@ -434,7 +433,7 @@ def compute_smart_highlights(df: pd.DataFrame, top_n: int = 3) -> pd.DataFrame:
     return result
 
 # ═══════════════════════════════════════════════════════════
-#  SIDEBAR FILTERS
+#  SIDEBAR ELEMENTS (Comparison Mode Removed)
 # ═══════════════════════════════════════════════════════════
 with st.sidebar:
     st.markdown(f"""
@@ -558,7 +557,7 @@ def section_header(icon: str, title: str, subtitle: str = ""):
 """, unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════
-#  DASHBOARD RENDER FUNCTION (Single Video Only)
+#  DASHBOARD RENDER FUNCTION (Single Video Focus)
 # ═══════════════════════════════════════════════════════════
 def render_video_analysis(url: str, depth: int, emotion_filter: str):
     vid_match = re.search(r"(?:v=|\/|embed\/|shorts\/)([0-9A-Za-z_-]{11})", url)
@@ -604,7 +603,7 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str):
     if emotion_filter != "All Emotions":
         df_f = df_f[df_f['Sentiment'] == emotion_filter].copy()
 
-    # Metrics rendering with fixed 4 columns (Centered via CSS)
+    # Metrics Layout (Forced centering applied in CSS above)
     c1, c2, c3, c4 = st.columns(4)
     c1.metric(t("Comments Sampled", "تعليقات مسحوبة"), f"{raw_len:,}")
     c2.metric(t("Timestamped", "مرتبطة بوقت"),      f"{parsed_len:,}")
@@ -773,7 +772,6 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str):
         </div>
         """, unsafe_allow_html=True)
 
-
 # ═══════════════════════════════════════════════════════════
 #  APPLICATION EXECUTION FLOW
 # ═══════════════════════════════════════════════════════════
@@ -789,6 +787,5 @@ if not target_url.strip():
 </p>
 </div>
 """, unsafe_allow_html=True)
-
 else:
     render_video_analysis(target_url, target_max_results, selected_filter)
