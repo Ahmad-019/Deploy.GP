@@ -165,7 +165,17 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stAppViewContainer
 [data-testid="block-container"] {{ padding: 0 3rem 5rem !important; max-width: 1400px; }}
 #MainMenu, footer {{ visibility: hidden; }}
 header {{ background-color: transparent !important; }}
-[data-testid="stSidebar"] {{ background: var(--surface-1) !important; border-right: 1px solid var(--border) !important; }}
+
+/* 💡 إصلاح السايد بار ليبقى LTR دائمًا لمنع تداخل العناصر في الموبايل */
+[data-testid="stSidebar"] {{ 
+    background: var(--surface-1) !important; 
+    border-right: 1px solid var(--border) !important; 
+    direction: ltr !important; 
+}}
+[data-testid="stSidebar"] * {{
+    direction: ltr !important;
+    text-align: left !important;
+}}
 [data-testid="stSidebar"] > div {{ padding-top: 0 !important; }}
 
 div[role="radiogroup"] label {{ white-space: nowrap !important; }}
@@ -176,9 +186,43 @@ div[role="radiogroup"] p {{ font-family: var(--font-body) !important; font-size:
 [data-testid="stSidebar"] .stTextInput input:focus {{ border-color: var(--cherry) !important; box-shadow: 0 0 0 3px rgba(128,0,32,0.12) !important; outline: none !important; }}
 [data-testid="stSidebar"] .stTextInput input::placeholder {{ color: var(--text-3) !important; font-size: 0.75rem !important; }}
 .stProgress > div > div > div > div {{ background: linear-gradient(90deg, var(--cherry), var(--cherry-lt)) !important; border-radius: 4px !important; }}
-div[data-testid="metric-container"] {{ background: var(--surface-2) !important; border: 1px solid var(--border) !important; border-radius: 12px !important; padding: 20px 24px !important; box-shadow: 0 4px 12px rgba(0,0,0,0.02) !important; }}
-[data-testid="stMetricValue"] {{ font-family: var(--font-display) !important; font-size: 2.2rem !important; letter-spacing: 1px !important; color: var(--cherry) !important; direction: ltr; }}
-[data-testid="stMetricLabel"] {{ font-family: var(--font-body) !important; font-size: 0.75rem !important; letter-spacing: 0.5px !important; font-weight:600 !important; color: var(--text-3) !important; }}
+
+/* 💡 إصلاح محاذاة وتوسيط الـ KPIs (Metrics) */
+div[data-testid="metric-container"] {{ 
+    background: var(--surface-2) !important; 
+    border: 1px solid var(--border) !important; 
+    border-radius: 12px !important; 
+    padding: 20px 24px !important; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}}
+[data-testid="stMetricValue"] {{ 
+    font-family: var(--font-display) !important; 
+    font-size: 2.2rem !important; 
+    letter-spacing: 1px !important; 
+    color: var(--cherry) !important; 
+    direction: ltr !important; 
+    width: 100% !important;
+    text-align: center !important;
+    display: flex !important;
+    justify-content: center !important;
+}}
+[data-testid="stMetricLabel"] {{ 
+    font-family: var(--font-body) !important; 
+    font-size: 0.75rem !important; 
+    letter-spacing: 0.5px !important; 
+    font-weight:600 !important; 
+    color: var(--text-3) !important; 
+    width: 100% !important;
+    text-align: center !important;
+    display: flex !important;
+    justify-content: center !important;
+}}
+
 [data-testid="stStatusContainer"] {{ background: var(--surface-2) !important; border: 1px solid var(--border) !important; border-radius: 12px !important; font-family: var(--font-body) !important; font-size: 0.8rem !important; color: var(--text-1) !important; }}
 hr {{ border-color: var(--border) !important; }}
 .stAlert {{ background: var(--surface-2) !important; border: 1px solid var(--border) !important; border-radius: 10px !important; color: var(--text-2) !important; font-family: var(--font-body) !important; }}
@@ -186,8 +230,6 @@ hr {{ border-color: var(--border) !important; }}
 ::-webkit-scrollbar-track {{ background: var(--surface-0); }}
 ::-webkit-scrollbar-thumb {{ background: var(--surface-3); border-radius: 4px; }}
 .highlight-link:hover {{ opacity: 0.8; }}
-@keyframes pulse {{ 0%,100%{{opacity:1;}} 50%{{opacity:0.3;}} }}
-[data-testid="stSidebar"] p, [data-testid="stSidebar"] span, [data-testid="stSidebar"] label, [data-testid="stSidebar"] div, [data-testid="stSidebar"] .stMarkdown p {{ color: var(--sidebar-text) !important; }}
 
 @media (max-width: 768px) {{
     [data-testid="block-container"] {{ padding: 0 1rem 3rem !important; }}
@@ -296,7 +338,6 @@ def process_intelligence(comments: List[str]):
             data.append({"Timestamp": ts, "Seconds": secs, "Content": normalized_text})
     return pd.DataFrame(data)
 
-# 💡 تم توسيع الكلمات المفتاحية لـ Funny لتشمل كل الأنماط الممكنة لمنع اختلاطها بـ Happy
 def classify_sentiment_logic(text: str):
     t_text = str(text).lower()
     if any(x in t_text for x in ['😂', '🤣', 'lol', 'haha', 'funny', 'هههه', 'بضحك', 'متت', 'فطست', 'لول', 'hilarious', 'lmao', 'lmfao', 'rofl', 'joke', 'jokes', 'laugh', 'laughing', 'cracking up', 'dying', 'xd', 'مضحك', 'مسخرة', 'نكتة']): return "Funny"
@@ -306,7 +347,6 @@ def classify_sentiment_logic(text: str):
     if any(x in t_text for x in ['عظيم', 'مؤثر', 'بطل', 'فخر', 'ملهم', 'احترام', 'inspire', 'inspirational', 'legend', 'respect', 'deep', 'masterpiece', 'motivated', 'motivation', 'wisdom']): return "Inspirational"
     return "Neutral"
 
-# 💎 محرك التصنيف الهجين المطور: يعزل المحايد تماماً ويصحح الـ Mapping لضمان دقة الرسوم البيانية 100%
 def batch_classify_hybrid_engine(df: pd.DataFrame) -> pd.DataFrame:
     if df.empty: return df
     
@@ -320,18 +360,11 @@ def batch_classify_hybrid_engine(df: pd.DataFrame) -> pd.DataFrame:
     arabic_pattern = re.compile(r'[\u0600-\u06FF]')
     has_arabic = any(arabic_pattern.search(str(text)) for text in df['Content'])
 
-    # 💡 خريطة تحويل المشاعر الدقيقة من الـ Transformers لمنع تسرب المشاعر السلبية أو المحايدة لـ Happy
     emotion_map = {
-        'joy': 'Happy',
-        'sadness': 'Sad',
-        'anger': 'Controversial',
-        'disgust': 'Controversial',
-        'fear': 'Sad',
-        'surprise': 'Inspirational',
-        'neutral': 'Neutral'
+        'joy': 'Happy', 'sadness': 'Sad', 'anger': 'Controversial',
+        'disgust': 'Controversial', 'fear': 'Sad', 'surprise': 'Inspirational', 'neutral': 'Neutral'
     }
 
-    # 1️⃣ منطق الفيديوهات الأجنبية (الدقة الكاملة عبر الـ Transformer)
     if not has_arabic:
         for idx, row in df_neutral.iterrows():
             try:
@@ -339,8 +372,6 @@ def batch_classify_hybrid_engine(df: pd.DataFrame) -> pd.DataFrame:
                 df.at[idx, 'Sentiment'] = emotion_map.get(res['label'], "Neutral")
             except:
                 df.at[idx, 'Sentiment'] = "Neutral"
-                
-    # 2️⃣ منطق الفيديوهات العربية (حماية السيرفر من الـ Timeouts أثناء الترجمة)
     else:
         df_neutral['len'] = df_neutral['Content'].astype(str).str.len()
         df_neutral = df_neutral.sort_values(by='len', ascending=False)
@@ -361,7 +392,6 @@ def batch_classify_hybrid_engine(df: pd.DataFrame) -> pd.DataFrame:
             except:
                 df.at[idx, 'Sentiment'] = "Neutral"
                 
-        # التعليقات غير العاطفية تبقى Neutral لتفادي تضخيم أي فئة عشوائياً في الرسوم البيانية
         df.loc[df['Sentiment'] == "Neutral", 'Sentiment'] = "Neutral"
                 
     return df
@@ -404,7 +434,7 @@ def compute_smart_highlights(df: pd.DataFrame, top_n: int = 3) -> pd.DataFrame:
     return result
 
 # ═══════════════════════════════════════════════════════════
-#  SIDEBAR ELEMENTS
+#  SIDEBAR FILTERS
 # ═══════════════════════════════════════════════════════════
 with st.sidebar:
     st.markdown(f"""
@@ -420,15 +450,6 @@ with st.sidebar:
         placeholder="https://www.youtube.com/watch?v=...",
         label_visibility="collapsed",
         key="yt_input_1"
-    )
-
-    st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
-    
-    target_url_2 = st.text_input(
-        t("Compare with (Optional)", "فيديو آخر للمقارنة (اختياري)"),
-        placeholder=t("Add 2nd Video to Compare...", "أضف رابط فيديو آخر..."),
-        label_visibility="visible",
-        key="yt_input_2"
     )
 
     with st.expander(t("⏳ View Analysis History", "⏳ سجل التحليلات"), expanded=False):
@@ -537,9 +558,9 @@ def section_header(icon: str, title: str, subtitle: str = ""):
 """, unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════
-#  DASHBOARD RENDER FUNCTION
+#  DASHBOARD RENDER FUNCTION (Single Video Only)
 # ═══════════════════════════════════════════════════════════
-def render_video_analysis(url: str, depth: int, emotion_filter: str, is_comparison_mode: bool, col_key: str = ""):
+def render_video_analysis(url: str, depth: int, emotion_filter: str):
     vid_match = re.search(r"(?:v=|\/|embed\/|shorts\/)([0-9A-Za-z_-]{11})", url)
     if not vid_match:
         st.error(f"⚠️ Invalid URL: {url}")
@@ -547,10 +568,10 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str, is_comparis
 
     v_id = vid_match.group(1)
 
-    state_key_df = f"df_{col_key}_{v_id}"
-    state_key_depth = f"depth_{col_key}_{v_id}"
-    state_key_raw_len = f"raw_len_{col_key}_{v_id}"
-    state_key_parsed_len = f"parsed_len_{col_key}_{v_id}"
+    state_key_df = f"df_{v_id}"
+    state_key_depth = f"depth_{v_id}"
+    state_key_raw_len = f"raw_len_{v_id}"
+    state_key_parsed_len = f"parsed_len_{v_id}"
 
     if not any(h['v_id'] == v_id for h in st.session_state.watch_history):
         st.session_state.watch_history.append({"v_id": v_id, "time": datetime.now().strftime("%Y-%m-%d %H:%M")})
@@ -579,21 +600,16 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str, is_comparis
     raw_len = st.session_state[state_key_raw_len]
     parsed_len = st.session_state[state_key_parsed_len]
 
-    # عزل المحايد تماماً لحساب دقيق للمشاعر الحقيقية
     df_f = df_work_cached[df_work_cached['Sentiment'] != "Neutral"].copy()
     if emotion_filter != "All Emotions":
         df_f = df_f[df_f['Sentiment'] == emotion_filter].copy()
 
-    if is_comparison_mode:
-        c1, c2 = st.columns(2)
-        c1.metric(t("Sampled", "مسحوبة"), f"{raw_len:,}")
-        c2.metric(t("Signals", "إشارات"),  f"{len(df_f):,}")
-    else:
-        c1, c2, c3, c4 = st.columns(4)
-        c1.metric(t("Comments Sampled", "تعليقات مسحوبة"), f"{raw_len:,}")
-        c2.metric(t("Timestamped", "مرتبطة بوقت"),      f"{parsed_len:,}")
-        c3.metric(t("Emotive Signals", "إشارات عاطفية"),  f"{len(df_f):,}")
-        c4.metric(t("Confidence", "الدقة"),       "96.4%")
+    # Metrics rendering with fixed 4 columns (Centered via CSS)
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric(t("Comments Sampled", "تعليقات مسحوبة"), f"{raw_len:,}")
+    c2.metric(t("Timestamped", "مرتبطة بوقت"),      f"{parsed_len:,}")
+    c3.metric(t("Emotive Signals", "إشارات عاطفية"),  f"{len(df_f):,}")
+    c4.metric(t("Confidence", "الدقة"),       "96.4%")
 
     col_hdr_1, col_hdr_2 = st.columns([3, 1])
     with col_hdr_1:
@@ -602,12 +618,12 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str, is_comparis
     if df_f.empty:
         st.info(t("No emotive peaks detected for your selection.", "لم يتم العثور على ذروات عاطفية لهذا الاختيار."))
     else:
-        highlights = compute_smart_highlights(df_f, top_n=3 if not is_comparison_mode else 1)
+        highlights = compute_smart_highlights(df_f, top_n=3)
         
         with col_hdr_2:
             st.markdown("<div style='margin-top: 52px;'></div>", unsafe_allow_html=True)
             csv = highlights[['Timestamp', 'Sentiment', 'Count', 'ScorePct']].to_csv(index=False).encode('utf-8')
-            st.download_button(t("📥 Export", "📥 تصدير"), data=csv, file_name=f'highlights_{v_id}.csv', mime='text/csv', use_container_width=True, key=f"dl_{col_key}_{v_id}")
+            st.download_button(t("📥 Export", "📥 تصدير"), data=csv, file_name=f'highlights_{v_id}.csv', mime='text/csv', use_container_width=True, key=f"dl_{v_id}")
 
         st.video(f"https://www.youtube.com/watch?v={v_id}", start_time=st.session_state[f"start_{v_id}"])
 
@@ -617,7 +633,7 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str, is_comparis
             {"en": "THIRD SPIKE", "ar": "المركز الثالث",  "crown": "🥉", "border_top": "var(--text-3)", "pulse": False},
         ]
 
-        num_cols = 3 if not is_comparison_mode else len(highlights)
+        num_cols = 3
         cols = st.columns(num_cols)
         
         for i, row in highlights.iterrows():
@@ -648,7 +664,7 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str, is_comparis
 </div>
 """, unsafe_allow_html=True)
 
-                if st.button(t("▶ PLAY IN-APP", "▶ تشغيل الفيديو"), key=f"play_{col_key}_{v_id}_{row['Seconds']}_{i}", use_container_width=True):
+                if st.button(t("▶ PLAY IN-APP", "▶ تشغيل الفيديو"), key=f"play_{v_id}_{row['Seconds']}_{i}", use_container_width=True):
                     st.session_state[f"start_{v_id}"] = int(row['Seconds'])
                     st.rerun()
 
@@ -697,7 +713,7 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str, is_comparis
             yaxis=dict(gridcolor=grid_color, zeroline=False),
             bargap=0.05, margin=dict(l=0, r=0, t=30, b=0),
         )
-        st.plotly_chart(fig, use_container_width=True, key=f"hist_{col_key}_{v_id}")
+        st.plotly_chart(fig, use_container_width=True, key=f"hist_{v_id}")
 
     if emotion_filter == "All Emotions":
         st.markdown("<br>", unsafe_allow_html=True)
@@ -723,7 +739,7 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str, is_comparis
                 font=dict(family="JetBrains Mono" if not st.session_state.is_arabic else "Cairo", color=font_color, size=11),
                 margin=dict(l=0, r=0, t=10, b=0),
             )
-            st.plotly_chart(fig2, use_container_width=True, key=f"bar_{col_key}_{v_id}")
+            st.plotly_chart(fig2, use_container_width=True, key=f"bar_{v_id}")
 
         with tab2:
             st.markdown(f"<div style='text-align:center; font-size:0.75rem; color:var(--text-3); font-weight:600; margin-bottom:5px; font-family:var(--font-body);'>{t('Top Keywords', 'أبرز الكلمات المتكررة')}</div>", unsafe_allow_html=True)
@@ -761,9 +777,7 @@ def render_video_analysis(url: str, depth: int, emotion_filter: str, is_comparis
 # ═══════════════════════════════════════════════════════════
 #  APPLICATION EXECUTION FLOW
 # ═══════════════════════════════════════════════════════════
-urls_to_process = [url for url in [target_url, target_url_2] if url.strip()]
-
-if len(urls_to_process) == 0:
+if not target_url.strip():
     st.markdown(f"""
 <div style="margin-top:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 40px;border:1px dashed var(--border-hi);border-radius:20px;text-align:center;background:var(--surface-0);">
 <div style="width:64px;height:64px;background:linear-gradient(135deg,rgba(128,0,32,0.1),rgba(158,27,52,0.1));border:1px solid rgba(128,0,32,0.2);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:20px;box-shadow:0 8px 16px rgba(128,0,32,0.05);">✦</div>
@@ -771,25 +785,10 @@ if len(urls_to_process) == 0:
 {t("READY FOR ANALYSIS", "النظام جاهز للتحليل")}
 </div>
 <p style="font-size:0.9rem;font-family:var(--font-body);font-weight:600;color:var(--text-2);max-width:380px;line-height:1.7;margin:0;">
-{t("Paste a YouTube URL into the sidebar to begin detecting golden moments. You can add a second URL to compare!", "قم بلصق رابط يوتيوب في القائمة الجانبية للبدء. يمكنك إضافة رابط آخر لعمل مقارنة مباشرة!")}
+{t("Paste a YouTube URL into the sidebar to begin detecting golden moments.", "قم بلصق رابط يوتيوب في القائمة الجانبية للبدء في استخراج اللحظات الذهبية بدقة عالية.")}
 </p>
 </div>
 """, unsafe_allow_html=True)
 
-elif len(urls_to_process) == 1:
-    render_video_analysis(urls_to_process[0], target_max_results, selected_filter, is_comparison_mode=False, col_key="single")
-
-elif len(urls_to_process) == 2:
-    st.markdown(f"""
-    <div style="text-align:center;font-family:var(--font-body);font-weight:700;font-size:2.2rem;color:var(--text-1);letter-spacing:1px;margin:20px 0 40px;">
-    ⚔️ {t("A/B COMPARISON MODE", "وضع المقارنة")}
-    </div>
-    """, unsafe_allow_html=True)
-    
-    colA, colB = st.columns(2, gap="large")
-    with colA:
-        st.markdown("<div style='border-top: 4px solid var(--cherry); padding-top: 10px;'></div>", unsafe_allow_html=True)
-        render_video_analysis(urls_to_process[0], target_max_results, selected_filter, is_comparison_mode=True, col_key="colA")
-    with colB:
-        st.markdown("<div style='border-top: 4px solid var(--cherry-lt); padding-top: 10px;'></div>", unsafe_allow_html=True)
-        render_video_analysis(urls_to_process[1], target_max_results, selected_filter, is_comparison_mode=True, col_key="colB")
+else:
+    render_video_analysis(target_url, target_max_results, selected_filter)
